@@ -72,8 +72,9 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageSearch.cs" />
+    <Compile Include="Scheduler.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="StringProcessing.cs" />
+    <Compile Include="OCR.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />

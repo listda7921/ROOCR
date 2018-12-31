@@ -22,7 +22,37 @@ public static class ImageSearch
     [DllImport("user32.dll", SetLastError = true)]
 
     public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-    static public string CaptureWindow(IntPtr handle)
+
+
+    public static Bitmap PrintWindow(IntPtr handle)
+    {
+        Rectangle rect = new Rectangle();
+        GetWindowRect(handle, ref rect);
+
+        rect.Width = rect.Width - rect.X;
+        rect.Height = rect.Height - rect.Y;
+
+        using (Bitmap bitmap = new Bitmap(rect.Width, rect.Height))
+        {
+
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                IntPtr hdc = g.GetHdc();
+                if (!PrintWindow(handle, hdc, 0))
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    var exception = new System.ComponentModel.Win32Exception(error);
+                    Debug.WriteLine("ERROR: " + error + ": " + exception.Message);
+                }
+                g.ReleaseHdc(hdc);
+                bitmap.Save("./asdf.png");
+                Bitmap Clone = (Bitmap)bitmap.Clone();
+                return Clone;
+            }
+        }
+    }
+
+    static public String CaptureWindow(IntPtr handle)
     {
         string path = System.IO.Path.GetTempPath();
 
@@ -50,27 +80,69 @@ public static class ImageSearch
                     // TODO: Throw the exception?
                 }
                 g.ReleaseHdc(hdc);
+                //bitmap.Save("./sa.png");
             }
             //return bitmap;
             // Save it as a .png just to demo this
-            //bitmap.Save(path + "a.png");
-            //Console.WriteLine("Capture Window path: " + path + "a.png");
+
+            //Console.WriteLine("Capture Window path: " + ` + "a.png");
         }
         return path + "a.png";
     }
+    public static Point SearchFromHandle(IntPtr screenhandle, string imgTemplatePath, double accuracy = 0.75)
+    {
+        Bitmap imgSource = PrintWindow(screenhandle);
+        Image<Bgr, byte> source = new Image<Bgr, byte>(imgSource); // Image B
+        Image<Bgr, byte> template = new Image<Bgr, byte>(imgTemplatePath); // Path to Template
+        using (Image<Gray, float> result = source.MatchTemplate(template, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
 
+        {
+            double[] minValues, maxValues;
+            Point[] minLocations, maxLocations;
+            result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
 
-    public static Point Search(string windowTitle, string imgTargetPath, double accuracy = 0.75, bool isTest = false)
+            if (maxValues[0] > accuracy)
+            {
+                return maxLocations[0];
+            }
+            else
+            {
+                return new Point(-1, -1);
+            }
+        }
+    }
+    public static Point SearchFromImage(Bitmap imgSource, string imgTemplatePath, double accuracy = 0.75)
+    {
+        Image<Bgr, byte> source = new Image<Bgr, byte>(imgSource); // Image B
+        Image<Bgr, byte> template = new Image<Bgr, byte>(imgTemplatePath); // Path to Template
+        using (Image<Gray, float> result = source.MatchTemplate(template, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
+
+        {
+            double[] minValues, maxValues;
+            Point[] minLocations, maxLocations;
+            result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
+
+            if (maxValues[0] > accuracy)
+            {
+                return maxLocations[0];
+            }
+            else
+            {
+                return new Point(-1, -1);
+            }
+        }
+    }
+    public static Point Search(string windowTitle, string imgTargetPath, double accuracy = 0.6, bool isTest = false)
     {
         //Point point = new Point();
         IntPtr hwnd = FindWindow(null, windowTitle);//, "YouTube - Google Chrome");
         string imgSource = CaptureWindow(hwnd);
-        string imgSearch = imgTargetPath;// Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\a.png";//inputImageTargetPath.Text;
-
+        string imgSearch = imgTargetPath;
+        
         Image<Bgr, byte> source = new Image<Bgr, byte>(imgSource); // Image B
         Image<Bgr, byte> template = new Image<Bgr, byte>(imgSearch); // Image A
         Image<Bgr, byte> imageToShow = source.Copy();
-
+        
         using (Image<Gray, float> result = source.MatchTemplate(template, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
 
         {
@@ -103,5 +175,16 @@ public static class ImageSearch
                 //throw new ApplicationException("Not found!");
             }
         }
+        
+    }
+
+    public static Bitmap CropImage(Bitmap srcImg, Point Reference, int Width = 549, int Height = 85)
+    {
+        Rectangle area = new Rectangle();
+        area.X = Reference.X;
+        area.Y = Reference.Y;
+        area.Width = Width;
+        area.Height = Height;
+        return srcImg.Clone(area, srcImg.PixelFormat);
     }
 }

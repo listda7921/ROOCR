@@ -158,5 +158,11 @@ namespace ROMAssistant
 
             return bmp;
         }
+
+        private static Image CropImage(Image img, Rectangle cropArea)
+        {
+            Bitmap bmpImage = new Bitmap(img);
+            return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
+        }
     }
 }
