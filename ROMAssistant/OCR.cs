@@ -25,7 +25,7 @@ namespace ROMAssistant
         }
         public static int ExtractTime(String text)
         {
-            Regex regex = new Regex(@"(((\d+) min)|Appeared)");
+            Regex regex = new Regex(@"(((\d+) m)|Appeared)");
             Match match = regex.Match(text);
             if (match.Value == "Appeared")
             {
@@ -33,11 +33,12 @@ namespace ROMAssistant
             }
             else
             {
-                if (match.Groups.Count >= 4)
-                {
-                    return int.Parse(match.Groups[3].Value);
-                }
-                return 30; // Return 30 minutes instead
+                //if (match.Groups.Count >= 4)
+                //{
+                var x = int.Parse(match.Groups[3].Value);
+                return x;
+                //}
+                //return 30; // Return 30 minutes instead
             }
 
         }

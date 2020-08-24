@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ROMAssistant
 {
@@ -125,8 +126,9 @@ namespace ROMAssistant
                 Point MonsterImage;
                 await Task.Delay(2000);
 
-                Bitmap bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
-                MonsterImage = ImageSearch.SearchFromImage(bmp, "resources/smokie.png");
+                Bitmap bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)screenHandle));
+                MonsterImage = new Point((Size)ImageSearch.SearchFromImage(bmp, "resources/smokie.png"));
+                Timer_Mini = new List<int>();
 
                 Bitmap crop;
                 if (MonsterImage.X == -1 && MonsterImage.Y == -1)
@@ -138,11 +140,12 @@ namespace ROMAssistant
                     Point TempPoint;
                     bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
                     TempPoint = new Point(MonsterImage.X + 360, MonsterImage.Y + 110 * i);
-                    crop = ImageSearch.CropImage(bmp, TempPoint, 400, 100);
+                    crop = ImageSearch.CropImage(bmp, TempPoint, 180, 50);
                     crop.Save($"mob{i}.bmp");
                     Timer_Mini.Add(OCR.ExtractTime(OCR.RawOCR(crop)));
                     Log.Info($"{MobName_Mini[i]}: {Timer_Mini[i].ToString()} minutes");
                 }
+                bmp.Dispose();
 
                 Log.Success("Successfully scanned!");
                 if (autoClose)
@@ -189,6 +192,7 @@ namespace ROMAssistant
             }
             isHunting = false;
             Log.Info("Monster probably dead by now... Idling...");
+            await this.ai.Action.CancelAuto(500);
         }
     }
     class Interface
@@ -223,6 +227,12 @@ namespace ROMAssistant
         public async Task ClickAuto(int millisecondsDelay)
         {
             this.ai.ClickImage("resources/button-auto.png");
+            await Task.Delay(millisecondsDelay);
+        }
+        public async Task CancelAuto(int millisecondsDelay)
+        {
+            //this.ai.ClickImage("resources/cancel-auto.png");
+            ai.Click(new Point(ai.Settings.cancelAuto[0], ai.Settings.cancelAuto[1]));
             await Task.Delay(millisecondsDelay);
         }
         public async Task ButterflyWing(int millisecondsDelay = 10000)

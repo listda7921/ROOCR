@@ -8,5 +8,6 @@
     "butterflyWing": [845, 566],
     "flyWing": [739, 566],
     "attackDelay": 30,
-    "huntingDelay": 60
+    "huntingDelay": 60,
+    "cancelAuto":[1230, 566]
 }

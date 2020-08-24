@@ -31,6 +31,7 @@ namespace ROMAssistant
          */
          public async Task<bool> ScheduleHunt(List<int> minutes)
          {
+
             // Find Minimum
             int minimumIndex = 0;
             for (int i=0;i<minutes.Count;i++)
@@ -41,7 +42,7 @@ namespace ROMAssistant
                 }
             }
 
-            minimumIndex = 4;
+            //minimumIndex = 4;
 
             // Act if idle
             if (isIdle == true)
@@ -68,6 +69,7 @@ namespace ROMAssistant
                 ai.Click(new Point(950, 690)); // Click Go
                 int delay = minutes[minimumIndex] * 1000 * 60 - 10000;
                 //delay = 0;
+                //await Task.Delay(25000);
                 if (delay > 0)
                     await Task.Delay(delay);
 

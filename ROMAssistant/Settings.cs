@@ -43,5 +43,6 @@ namespace ROMAssistant
         public int[] flyWing = { 1130, 590 }; // F5
         public int attackDelay = 45;// 30 seconds
         public int huntingDelay = 60;
+        public int[] cancelAuto = { 1230, 566 };
     }
 }
