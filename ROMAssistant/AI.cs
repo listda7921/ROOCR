@@ -194,6 +194,11 @@ namespace ROMAssistant
             Log.Info("Monster probably dead by now... Idling...");
             await this.ai.Action.CancelAuto(500);
         }
+
+        public string getOCRText(Bitmap crop)
+        {
+            return OCR.RawOCR(crop);
+        }
     }
     class Interface
     {
@@ -243,6 +248,30 @@ namespace ROMAssistant
             //butteryflyWing = ImageSearch.SearchFromImage(bmp, "resources/smokie.png");
             //this.ai.ClickImage("resources/butterfly-wing.png");
             await Task.Delay(millisecondsDelay);
+        }
+
+        public async Task<string> GetCurrentLocation()
+        {
+            //Point ReferencePoint = new Point(110, 125); // Smokie
+            //ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
+            //ai.Click(ReferencePoint);
+
+            Bitmap bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
+            var img = new Point((Size)ImageSearch.SearchFromImage(bmp, "resources/more.png"));
+            var map = new Point(img.X + 110, img.Y);
+            ai.Click(map); //1038, 130
+
+            await Task.Delay(100);
+
+            var TempPoint = new Point(1038, 130);
+            Bitmap crop = crop = ImageSearch.CropImage(bmp, TempPoint, 160, 85);
+
+            var location = ai.getOCRText(crop);
+
+            this.ai.ClickImage("resources/more.png");
+
+            await Task.Delay(500);
+            return "Prontera West gate";
         }
     }
 }
