@@ -18,7 +18,7 @@ namespace ROMAssistant
         }
         public string RawOCR(Bitmap Image)
         {
-            var page = Engine.Process(Image);
+           var page = Engine.Process(Image);
             string text = page.GetText();
             page.Dispose();
             return text;

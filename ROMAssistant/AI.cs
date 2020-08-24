@@ -123,7 +123,7 @@ namespace ROMAssistant
                 Log.Info("Scanning for Mini Boss... Please wait...");
                 await this.Action.OpenMVP();
                 Point MonsterImage;
-                await Task.Delay(1000);
+                await Task.Delay(2000);
 
                 Bitmap bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
                 MonsterImage = ImageSearch.SearchFromImage(bmp, "resources/smokie.png");
@@ -137,8 +137,8 @@ namespace ROMAssistant
                 {
                     Point TempPoint;
                     bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
-                    TempPoint = new Point(MonsterImage.X, MonsterImage.Y + 110 * i);
-                    crop = ImageSearch.CropImage(bmp, TempPoint);
+                    TempPoint = new Point(MonsterImage.X + 360, MonsterImage.Y + 110 * i);
+                    crop = ImageSearch.CropImage(bmp, TempPoint, 400, 100);
                     crop.Save($"mob{i}.bmp");
                     Timer_Mini.Add(OCR.ExtractTime(OCR.RawOCR(crop)));
                     Log.Info($"{MobName_Mini[i]}: {Timer_Mini[i].ToString()} minutes");
@@ -178,6 +178,7 @@ namespace ROMAssistant
                 Point spawnmini = ImageSearch.SearchFromImage(Screen, "resources/miniboss-indicator.png", 0.9);
                 if (spawnmini.X >= 0 && spawnmini.Y >= 0)
                 {
+                    spawnmini.Y = spawnmini.Y - 25;
                     ai.Click(spawnmini);
                     Log.Success("Found target! Attacking...");
                     await Task.Delay(ai.Settings.attackDelay * 1000);
@@ -214,7 +215,7 @@ namespace ROMAssistant
             this.ai.ClickImage("resources/close-button.png");
             await Task.Delay(500);
             this.ai.ClickImage("resources/more.png");
-            await Task.Delay(500);
+            await Task.Delay(1000);
             this.ai.ClickImage("resources/mvp.png");
             await Task.Delay(1000);
             //this.ai.ClickImage("resources/close-button.png");
@@ -227,6 +228,10 @@ namespace ROMAssistant
         public async Task ButterflyWing(int millisecondsDelay = 10000)
         {
             ai.Click(new Point(ai.Settings.butterflyWing[0], ai.Settings.butterflyWing[1]));
+            //Point butteryflyWing;
+            //Bitmap bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
+            //butteryflyWing = ImageSearch.SearchFromImage(bmp, "resources/smokie.png");
+            //this.ai.ClickImage("resources/butterfly-wing.png");
             await Task.Delay(millisecondsDelay);
         }
     }

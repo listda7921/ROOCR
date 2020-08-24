@@ -40,15 +40,18 @@ namespace ROMAssistant
                     minimumIndex = i; // Set Minimum
                 }
             }
+
+            minimumIndex = 4;
+
             // Act if idle
             if (isIdle == true)
             {
                 isIdle = false;
                 await Task.Delay(500);
 
-                await ai.Action.ButterflyWing();
+                //await ai.Action.ButterflyWing();
 
-                await Task.Delay(10000);
+                //await Task.Delay(10000);
 
 
                 // Open MVP Interface
@@ -59,12 +62,12 @@ namespace ROMAssistant
 
                 // Click Selected MVP
                 Point ReferencePoint = new Point(110, 125); // Smokie
-                ReferencePoint = new Point(ReferencePoint.X+110, ReferencePoint.Y + (110 * minimumIndex)-55);
+                ReferencePoint = new Point(ReferencePoint.X+110, ReferencePoint.Y + (110 * minimumIndex));//-55
                 ai.Click(ReferencePoint);
                 await Task.Delay(500);
                 ai.Click(new Point(950, 690)); // Click Go
                 int delay = minutes[minimumIndex] * 1000 * 60 - 10000;
-
+                //delay = 0;
                 if (delay > 0)
                     await Task.Delay(delay);
 

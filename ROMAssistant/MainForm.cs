@@ -60,7 +60,7 @@ namespace ROMAssistant
         {
             try
             {
-                bool x = await AI.Action.OpenMVP();
+                await AI.Action.OpenMVP();
             }
             finally { }
         }

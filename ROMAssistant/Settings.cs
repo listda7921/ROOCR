@@ -38,6 +38,7 @@ namespace ROMAssistant
         public double[] btnClose = { 0.973, 0.203 };
         public double[] btnSettings = { 0.852, 0.601 };
         public string windowTitle = "(HW)";
+        //public string windowTitle = "(NoxPlayer)";
         public int[] butterflyWing = { 840, 580 }; // F2
         public int[] flyWing = { 1130, 590 }; // F5
         public int attackDelay = 45;// 30 seconds

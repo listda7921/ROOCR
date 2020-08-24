@@ -1,1 +1,12 @@
-{"btnBag":[0.734,0.028],"btnMore":[0.805,0.028],"btnMVP":[0.688,0.456],"btnClose":[0.973,0.203],"btnSettings":[0.852,0.601],"windowTitle":"Onel - Wiz","butterflyWing":[840,580],"flyWing":[1130,590],"attackDelay":30,"huntingDelay":60}
+{
+    "btnBag": [0.734, 0.028],
+    "btnMore": [0.805, 0.028],
+    "btnMVP": [0.688, 0.456],
+    "btnClose": [0.973, 0.203],
+    "btnSettings": [0.852, 0.601],
+    "windowTitle": "NoxPlayer",
+    "butterflyWing": [845, 566],
+    "flyWing": [739, 566],
+    "attackDelay": 30,
+    "huntingDelay": 60
+}
