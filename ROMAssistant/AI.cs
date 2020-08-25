@@ -152,6 +152,7 @@ namespace ROMAssistant
                 {
                     Log.Error("Cannot find a reference point.");
                 }
+                //TODO export loop to aync function
                 for (int i = 0; i < 5; i++)
                 {
                     Log.Info(aTimer.Interval.ToString());
@@ -167,7 +168,11 @@ namespace ROMAssistant
                     Log.Info($"{MobName_Mini[i]}: {Timer_Mini[i].ToString()} minutes");
                 }
 
-            
+                //TODO
+                //var loop = asyncFunctionCall()
+                //check timer: while loop is not resolved?
+                // if timer > 10 seconds: continue to line 123
+                // await loop
 
                 Log.Success("Successfully scanned!");
                 if (autoClose)
