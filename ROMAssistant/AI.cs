@@ -18,6 +18,7 @@ namespace ROMAssistant
         public int height = 720;
 
         String windowTitle;
+        private static System.Timers.Timer aTimer;
         public Interface Interface;
         public Action Action;
         public int hWnd;
@@ -121,13 +122,29 @@ namespace ROMAssistant
         {
             while (ai.isIdle == false)
             {
+                // Create a timer and set a two second interval.
+                aTimer = new System.Timers.Timer();
+                aTimer.Interval = 1000;
+
+                // Hook up the Elapsed event for the timer. 
+                aTimer.Elapsed += OnTimedEvent;
+
+                // Have the timer fire repeated events (true is the default)
+                aTimer.AutoReset = true;
+
+                // Start the timer
+                aTimer.Enabled = true;
+
+                Console.WriteLine("Press the Enter key to exit the program at any time... ");
+                Console.ReadLine();
+
                 Log.Info("Scanning for Mini Boss... Please wait...");
                 await this.Action.OpenMVP();
                 Point MonsterImage;
                 await Task.Delay(2000);
 
-                Bitmap bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)screenHandle));
-                MonsterImage = new Point((Size)ImageSearch.SearchFromImage(bmp, "resources/smokie.png"));
+                Bitmap bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
+                MonsterImage = ImageSearch.SearchFromImage(bmp, "resources/smokie.png");
                 Timer_Mini = new List<int>();
 
                 Bitmap crop;
@@ -137,6 +154,10 @@ namespace ROMAssistant
                 }
                 for (int i = 0; i < 5; i++)
                 {
+                    Log.Info(aTimer.Interval.ToString());
+                    if (aTimer.Interval > 5000) {
+                        Log.Error("took too long");
+                    }
                     Point TempPoint;
                     bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
                     TempPoint = new Point(MonsterImage.X + 360, MonsterImage.Y + 110 * i);
@@ -145,13 +166,18 @@ namespace ROMAssistant
                     Timer_Mini.Add(OCR.ExtractTime(OCR.RawOCR(crop)));
                     Log.Info($"{MobName_Mini[i]}: {Timer_Mini[i].ToString()} minutes");
                 }
-                bmp.Dispose();
+
+            
 
                 Log.Success("Successfully scanned!");
                 if (autoClose)
                     this.ClickImage("resources/close-button.png");
                 await Scheduler.ScheduleHunt(Timer_Mini);
             }
+        }
+        private static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            Console.WriteLine("The Elapsed event was raised at {0}", e.SignalTime);
         }
 
         public async Task waitForSpawn(int milliseconds=100)
@@ -168,7 +194,7 @@ namespace ROMAssistant
                     Log.Error("Cannot find/attack monster over a given period (huntingDelay)...");
                 } else
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(250);
                 }
                 // Use Fly Wing
                 ai.Click(new Point(ai.Settings.flyWing[0], ai.Settings.flyWing[1]));
@@ -199,6 +225,11 @@ namespace ROMAssistant
         {
             return OCR.RawOCR(crop);
         }
+
+        public void LogError(string message)
+        {
+            Log.Error(message);
+        }
     }
     class Interface
     {
@@ -221,12 +252,20 @@ namespace ROMAssistant
         }
         public async Task OpenMVP(int millisecondsDelay = 500)
         {
-            this.ai.ClickImage("resources/close-button.png");
-            await Task.Delay(500);
-            this.ai.ClickImage("resources/more.png");
-            await Task.Delay(1000);
-            this.ai.ClickImage("resources/mvp.png");
-            await Task.Delay(1000);
+            for (int i = 0; i < 5; i++)
+            {
+
+                this.ai.ClickImage("resources/close-button.png");
+                await Task.Delay(500);
+                this.ai.ClickImage("resources/more.png");
+                await Task.Delay(1000);
+                if (!this.ai.ClickImage("resources/mvp.png")) {
+                    ai.LogError("cant open mvp page");
+                    i++;
+                };
+                continue;
+            }
+                await Task.Delay(1000);
             //this.ai.ClickImage("resources/close-button.png");
         }
         public async Task ClickAuto(int millisecondsDelay)
@@ -240,7 +279,7 @@ namespace ROMAssistant
             ai.Click(new Point(ai.Settings.cancelAuto[0], ai.Settings.cancelAuto[1]));
             await Task.Delay(millisecondsDelay);
         }
-        public async Task ButterflyWing(int millisecondsDelay = 10000)
+        public async Task ButterflyWing(int millisecondsDelay = 1000)
         {
             ai.Click(new Point(ai.Settings.butterflyWing[0], ai.Settings.butterflyWing[1]));
             //Point butteryflyWing;
@@ -261,17 +300,34 @@ namespace ROMAssistant
             var map = new Point(img.X + 110, img.Y);
             ai.Click(map); //1038, 130
 
-            await Task.Delay(100);
+            await Task.Delay(200);
 
-            var TempPoint = new Point(1038, 130);
-            Bitmap crop = crop = ImageSearch.CropImage(bmp, TempPoint, 160, 85);
 
-            var location = ai.getOCRText(crop);
+            Bitmap bmp2 = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
 
-            this.ai.ClickImage("resources/more.png");
+            var TempPoint = new Point(940, 150);
+            Bitmap crop = ImageSearch.CropImage(bmp2, TempPoint, 220, 40);
+
+            var text = ai.getOCRText(crop);
+            Regex regex = new Regex(@"([a-zA-Z\s]+)");
+            Match match = regex.Match(text);
+            var val = match.Groups[0].Value;
+
+            string location = "Prontera";
+            if (val.Length == 8) location = "Prontera";
+            else if (val.Contains("West")) location = "Prontera West Gate";
+            else if (val.Contains("Lab")) location = "Labyrinth Forest";
+            else if (val.Contains("SDuth")) location = "Prontera South Gate";
+            var westgate = val.Length;
+
+            //this.ai.ClickImage("resources/more.png"); //1248,133
+
+            bmp.Dispose();
+            bmp2.Dispose();
 
             await Task.Delay(500);
-            return "Prontera West gate";
+            ai.Click(new Point(1248, 133));
+            return location;//"Prontera West gate";
         }
     }
 }

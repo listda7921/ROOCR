@@ -47,20 +47,29 @@ namespace ROMAssistant
             // Act if idle
             if (isIdle == true)
             {
-                isIdle = false;
+                
                 await Task.Delay(500);
 
                 var location = await ai.Action.GetCurrentLocation();
 
                 bool alreadyOnMap = false;
+                if (minimumIndex == 0 && location == "Prontera South Gate") alreadyOnMap = true;
+                else if (minimumIndex == 2 && location == "Prontera South Gate") alreadyOnMap = true;
+                else if (minimumIndex == 1 && location == "Labyrinth Forest") alreadyOnMap = true;
+                else if (minimumIndex == 3 && location == "Labyrinth Forest") alreadyOnMap = true;
+                else if (minimumIndex == 4 && location == "Prontera West Gate") alreadyOnMap = true;
 
                 if (alreadyOnMap)
                 {
+                    isIdle = false;
+                    ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
                     await ai.waitForSpawn((minutes[minimumIndex] * 1000 * 60));
                     isIdle = true;
                 }
                 else
                 {
+                    isIdle = false;
+                    await Task.Delay(500);
                     await ai.Action.ButterflyWing();
                     int milliSecondsToLoad = 15000;
                     await Task.Delay(milliSecondsToLoad);
@@ -81,7 +90,7 @@ namespace ROMAssistant
                     int delay = getDelay(minimumIndex);
                     await Task.Delay(delay);
 
-                    await ai.waitForSpawn((minutes[minimumIndex] * 1000 * 60) - delay - milliSecondsToLoad);
+                    await ai.waitForSpawn(Math.Max(0,(minutes[minimumIndex] * 1000 * 60) - delay));
                     isIdle = true;
                 }
             }
