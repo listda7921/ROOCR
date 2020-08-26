@@ -18,7 +18,6 @@ namespace ROMAssistant
         public int height = 720;
 
         String windowTitle;
-        private static System.Timers.Timer aTimer;
         public Interface Interface;
         public Action Action;
         public int hWnd;
@@ -122,18 +121,6 @@ namespace ROMAssistant
         {
             while (ai.isIdle == false)
             {
-                // Create a timer and set a two second interval.
-                aTimer = new System.Timers.Timer();
-                aTimer.Interval = 1000;
-
-                // Hook up the Elapsed event for the timer. 
-                aTimer.Elapsed += OnTimedEvent;
-
-                // Have the timer fire repeated events (true is the default)
-                aTimer.AutoReset = true;
-
-                // Start the timer
-                aTimer.Enabled = true;
 
                 Console.WriteLine("Press the Enter key to exit the program at any time... ");
                 Console.ReadLine();
@@ -141,7 +128,7 @@ namespace ROMAssistant
                 Log.Info("Scanning for Mini Boss... Please wait...");
                 await this.Action.OpenMVP();
                 Point MonsterImage;
-                await Task.Delay(2000);
+                //await Task.Delay(2000);
 
                 Bitmap bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
                 MonsterImage = ImageSearch.SearchFromImage(bmp, "resources/smokie.png");
@@ -155,10 +142,6 @@ namespace ROMAssistant
                 //TODO export loop to aync function
                 for (int i = 0; i < 5; i++)
                 {
-                    Log.Info(aTimer.Interval.ToString());
-                    if (aTimer.Interval > 5000) {
-                        Log.Error("took too long");
-                    }
                     Point TempPoint;
                     bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
                     TempPoint = new Point(MonsterImage.X + 360, MonsterImage.Y + 110 * i);
@@ -166,6 +149,8 @@ namespace ROMAssistant
                     crop.Save($"mob{i}.bmp");
                     Timer_Mini.Add(OCR.ExtractTime(OCR.RawOCR(crop)));
                     Log.Info($"{MobName_Mini[i]}: {Timer_Mini[i].ToString()} minutes");
+                    await Task.Delay(300);
+                    
                 }
 
                 //TODO
@@ -257,21 +242,20 @@ namespace ROMAssistant
         }
         public async Task OpenMVP(int millisecondsDelay = 500)
         {
-            for (int i = 0; i < 5; i++)
-            {
+            //for (int i = 0; i < 5; i++)
+            //{
 
-                this.ai.ClickImage("resources/close-button.png");
+                bool closeButton = this.ai.ClickImage("resources/close-button.png");
                 await Task.Delay(500);
-                this.ai.ClickImage("resources/more.png");
+                bool more = this.ai.ClickImage("resources/more.png");
+                await Task.Delay(250);
+                bool mvp = this.ai.ClickImage("resources/mvp.png");
                 await Task.Delay(1000);
-                if (!this.ai.ClickImage("resources/mvp.png")) {
-                    ai.LogError("cant open mvp page");
-                    i++;
-                };
-                continue;
-            }
-                await Task.Delay(1000);
-            //this.ai.ClickImage("resources/close-button.png");
+                //this.ai.ClickImage("resources/close-button.png");
+            //    if (closeButton && more && mvp) continue;
+            //    else i++;
+            //}
+            await Task.Delay(100);
         }
         public async Task ClickAuto(int millisecondsDelay)
         {
@@ -299,13 +283,14 @@ namespace ROMAssistant
             //Point ReferencePoint = new Point(110, 125); // Smokie
             //ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
             //ai.Click(ReferencePoint);
-
+            await Task.Delay(200);
             Bitmap bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
             var img = new Point((Size)ImageSearch.SearchFromImage(bmp, "resources/more.png"));
-            var map = new Point(img.X + 110, img.Y);
-            ai.Click(map); //1038, 130
+            //var map = new Point(img.X + 110, img.Y);
+            var map = new Point(1188, 49);
+            ai.Click(map); //1188, 49
 
-            await Task.Delay(200);
+            await Task.Delay(100);
 
 
             Bitmap bmp2 = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
@@ -330,8 +315,9 @@ namespace ROMAssistant
             bmp.Dispose();
             bmp2.Dispose();
 
-            await Task.Delay(500);
-            ai.Click(new Point(1248, 133));
+            await Task.Delay(100);
+            ai.Click(new Point(1243, 134));
+            ai.Log.Info($"Location: {val}...");
             return location;//"Prontera West gate";
         }
     }

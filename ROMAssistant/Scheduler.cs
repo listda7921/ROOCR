@@ -34,31 +34,61 @@ namespace ROMAssistant
 
             // Find Minimum
             int minimumIndex = 0;
-            for (int i=0;i<minutes.Count;i++)
+            //for (int i=0;i<minutes.Count;i++)
+            //{
+            //    if (minutes[i] <= minimumIndex)
+            //    {
+            //        minimumIndex = i; // Set Minimum
+            //    }
+            //}
+
+            //minimumIndex = 4;
+
+            var spawnedMinis = new List<int>();
+            bool alreadyOnMap = false;
+
+            for (int i = 0; i < minutes.Count; i++)
             {
+                if (minutes[i] == 0)
+                {
+                    spawnedMinis.Add(i);
+                }
                 if (minutes[i] <= minimumIndex)
                 {
                     minimumIndex = i; // Set Minimum
                 }
             }
 
-            //minimumIndex = 4;
+            var location = await ai.Action.GetCurrentLocation();
+            ai.Log.Info($"Location: {location}...");
+
+            if (spawnedMinis.Count() > 1)
+            {
+                if (spawnedMinis.Where(m => m == 0 || m == 2).Any() && location == "Prontera South Gate")
+                {
+                    minimumIndex = spawnedMinis.Where(m => m == 0 || m == 2).First();
+                    alreadyOnMap = true;
+                }
+                if (spawnedMinis.Where(m => m == 1 || m == 3).Any() && location == "Labyrinth Forest")
+                {
+                    minimumIndex = spawnedMinis.Where(m => m == 1 || m == 3).First();
+                    alreadyOnMap = true;
+                }
+            }
+
+
 
             // Act if idle
             if (isIdle == true)
             {
-                
-                await Task.Delay(500);
 
-                var location = await ai.Action.GetCurrentLocation();
 
-                bool alreadyOnMap = false;
+
                 if (minimumIndex == 0 && location == "Prontera South Gate") alreadyOnMap = true;
                 else if (minimumIndex == 2 && location == "Prontera South Gate") alreadyOnMap = true;
                 else if (minimumIndex == 1 && location == "Labyrinth Forest") alreadyOnMap = true;
                 else if (minimumIndex == 3 && location == "Labyrinth Forest") alreadyOnMap = true;
                 else if (minimumIndex == 4 && location == "Prontera West Gate") alreadyOnMap = true;
-
                 if (alreadyOnMap)
                 {
                     isIdle = false;
@@ -71,7 +101,7 @@ namespace ROMAssistant
                     isIdle = false;
                     await Task.Delay(500);
                     await ai.Action.ButterflyWing();
-                    int milliSecondsToLoad = 15000;
+                    int milliSecondsToLoad = 25000;
                     await Task.Delay(milliSecondsToLoad);
                     
                     // Open MVP Interface
@@ -105,19 +135,19 @@ namespace ROMAssistant
             switch (minimumIndex)
             {
                 case 0: //smokie SP
-                    delay = 30;
+                    delay = 35;
                     break;
                 case 1: //eclipse LF
                     delay = 60;
                     break;
                 case 2: //eclipse SP
-                    delay = 30;
+                    delay = 35;
                     break;
                 case 3: //poring LF
                     delay = 60;
                     break;
                 case 4: //rocker WP
-                    delay = 30;
+                    delay = 35;
                     break;
             }
             return delay * 1000;
