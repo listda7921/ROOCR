@@ -35,8 +35,10 @@ namespace ROMAssistant
             {
                 //if (match.Groups.Count >= 4)
                 //{
-                var x = int.Parse(match.Groups[3].Value);
-                return x;
+                int number;
+                var x = int.TryParse(match.Groups[3].Value, out number);
+                if (x) return number;
+                else return 30;
                 //}
                 //return 30; // Return 30 minutes instead
             }

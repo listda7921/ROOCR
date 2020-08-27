@@ -142,3 +142,7 @@ C:\projects\ROOCR\ROMAssistant\obj\Debug\ROMAssistant.csproj.CoreCompileInputs.c
 C:\projects\ROOCR\ROMAssistant\obj\Debug\ROMAssistant.csproj.CopyComplete
 C:\projects\ROOCR\ROMAssistant\obj\Debug\ROMAssistant.exe
 C:\projects\ROOCR\ROMAssistant\obj\Debug\ROMAssistant.pdb
+C:\projects\ROOCR\ROMAssistant\bin\Debug\ROMAssistant.exe.manifest
+C:\projects\ROOCR\ROMAssistant\bin\Debug\ROMAssistant.application
+C:\projects\ROOCR\ROMAssistant\obj\Debug\ROMAssistant.exe.manifest
+C:\projects\ROOCR\ROMAssistant\obj\Debug\ROMAssistant.application

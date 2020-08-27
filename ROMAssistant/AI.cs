@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,7 @@ namespace ROMAssistant
                 Log.Info("Detecing Ragnarok Mobile Client...");
                 if (hWnd <= 0) this.hWnd = FindNOX(windowTitle);
                 if (hWnd <= 0) this.hWnd = FindMEMU(windowTitle);
+                if (hWnd <= 0) this.hWnd = FindLDPlayer(windowTitle);
                 if (this.hWnd > 0)
                 {
                     this.Interface = new Interface((IntPtr)screenHandle);
@@ -93,6 +95,56 @@ namespace ROMAssistant
             }
             return MainWindow;
         }
+
+        private int FindLDPlayer(string windowTitle)
+        {
+            Process[] processlist = Process.GetProcesses();
+
+            foreach (Process process in processlist)
+            {
+                if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                {
+                    Console.WriteLine("Process: {0} ID: {1} Window title: {2}, handle {3}", process.ProcessName, process.Id, process.MainWindowTitle, process.MainWindowHandle);
+                }
+            }
+
+            var ld = processlist.Where(p => p.MainWindowTitle == "LDPlayer").FirstOrDefault();
+
+            var allChildWindows = new WindowHandleInfo(ld.MainWindowHandle).GetAllChildHandles();
+            //var allChildWindows1 = new WindowHandleInfo(allChildWindows[0]).GetAllChildHandles();
+            //var allChildWindows2 = new WindowHandleInfo(allChildWindows[1]).GetAllChildHandles();
+
+            //Bitmap bmp = ImageSearch.PrintWindow((IntPtr)allChildWindows[0]);
+            //Bitmap bmp1 = ImageSearch.PrintWindow((IntPtr)ld.MainWindowHandle);
+            //Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)allChildWindows1.FirstOrDefault());
+            //Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)allChildWindows2.FirstOrDefault());
+            //bool script = this.ai.ClickImage("resources/script.png");
+
+      
+
+            //Bitmap Screen = ImageSearch.PrintWindow(ld.MainWindowHandle);
+            //var BtnBag = ImageSearch.SearchFromImage(Screen, "resources/bag.png");
+            //var BtnMore = ImageSearch.SearchFromImage(Screen, "resources/more.png");
+            //var BtnParty = ImageSearch.SearchFromImage(Screen, "resources/party.png");
+
+            //Point point = ImageSearch.SearchFromHandle((IntPtr)ld.MainWindowHandle, "resources/more.png");
+            //Win32.Click((int)allChildWindows1.FirstOrDefault(), point.X, point.Y + 30); // NOX Constant
+            //Win32.Click((int)allChildWindows[0], point.X, point.Y + 30); // NOX Constant//win
+            //Win32.Click((int)allChildWindows[1], point.X, point.Y + 30); // NOX Constant
+
+
+            this.screenHandle = (int)ld.MainWindowHandle;
+            int MainWindow = (int)allChildWindows[0];
+            if (MainWindow > 0)
+            {
+                Log.Success("Detected Emulator: LD Player");
+            }
+
+
+
+
+            return MainWindow;
+        }
         public bool Click(Point point)
         {
             if (point.X > -1 && point.Y > -1)
@@ -109,6 +161,15 @@ namespace ROMAssistant
             System.Diagnostics.Debug.WriteLine(fileName+": " +point.X +","+ point.Y);
             if (point.X > -1 && point.Y > -1) {
                 Win32.Click(this.hWnd, point.X, point.Y+30); // NOX Constant
+                return true;
+            }
+            return false;
+        }
+        public bool ScrollDown(Point point)
+        {
+            if (point.X > -1 && point.Y > -1)
+            {
+                Win32.ScrollDown(this.hWnd, point.X, point.Y);
                 return true;
             }
             return false;
@@ -142,6 +203,9 @@ namespace ROMAssistant
                 //TODO export loop to aync function
                 for (int i = 0; i < 5; i++)
                 {
+                    try
+                    {
+
                     Point TempPoint;
                     bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
                     TempPoint = new Point(MonsterImage.X + 360, MonsterImage.Y + 110 * i);
@@ -149,7 +213,12 @@ namespace ROMAssistant
                     crop.Save($"mob{i}.bmp");
                     Timer_Mini.Add(OCR.ExtractTime(OCR.RawOCR(crop)));
                     Log.Info($"{MobName_Mini[i]}: {Timer_Mini[i].ToString()} minutes");
-                    await Task.Delay(300);
+                    await Task.Delay(400);
+                    }
+                    catch(Exception e)
+                    {
+                        Log.Info($"Error {e}");
+                    }
                     
                 }
 
@@ -175,8 +244,14 @@ namespace ROMAssistant
             await Task.Delay(milliseconds);
             isHunting = true;
             Task huntingDelayTimer = Task.Delay(ai.Settings.huntingDelay * 1000);
+
+            
+
             while (isHunting == true)
             {
+                var mapOpen = await ai.Action.IsMapOpen();
+                if (mapOpen)
+                    ai.Click(new Point(1243, 134));//close map
                 Log.Info("Searching for monster...");
                 if (huntingDelayTimer.IsCompleted == true)
                 {
@@ -188,7 +263,7 @@ namespace ROMAssistant
                 }
                 // Use Fly Wing
                 ai.Click(new Point(ai.Settings.flyWing[0], ai.Settings.flyWing[1]));
-                await Task.Delay(500);
+                await Task.Delay(400);
                 // Open Auto
                 await this.ai.Action.ClickAuto(500);
                 // Search for mini indicator ()
@@ -244,8 +319,9 @@ namespace ROMAssistant
         {
             //for (int i = 0; i < 5; i++)
             //{
-
-                bool closeButton = this.ai.ClickImage("resources/close-button.png");
+            //Bitmap bmp = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
+            //bool script = this.ai.ClickImage("resources/script.png");
+            bool closeButton = this.ai.ClickImage("resources/close-button.png");
                 await Task.Delay(500);
                 bool more = this.ai.ClickImage("resources/more.png");
                 await Task.Delay(250);
@@ -280,15 +356,22 @@ namespace ROMAssistant
 
         public async Task<string> GetCurrentLocation()
         {
-            //Point ReferencePoint = new Point(110, 125); // Smokie
-            //ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
-            //ai.Click(ReferencePoint);
+
             await Task.Delay(200);
-            Bitmap bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
-            var img = new Point((Size)ImageSearch.SearchFromImage(bmp, "resources/more.png"));
-            //var map = new Point(img.X + 110, img.Y);
+            
+            var isMapOpen = await IsMapOpen();
+
             var map = new Point(1188, 49);
-            ai.Click(map); //1188, 49
+            if (isMapOpen)
+            {
+                ai.Click(new Point(1243, 134));//close map
+                await Task.Delay(100);
+                ai.Click(map); //1188, 49
+            }
+            else
+            {
+                ai.Click(map); //1188, 49
+            }
 
             await Task.Delay(100);
 
@@ -303,22 +386,75 @@ namespace ROMAssistant
             Match match = regex.Match(text);
             var val = match.Groups[0].Value;
 
-            string location = "Prontera";
-            if (val.Length == 8) location = "Prontera";
+            string location = "";
+            if (val.Length < 10 && val.Contains("tera")) location = "Prontera";
             else if (val.Contains("West")) location = "Prontera West Gate";
             else if (val.Contains("Lab")) location = "Labyrinth Forest";
             else if (val.Contains("SDuth")) location = "Prontera South Gate";
             var westgate = val.Length;
 
-            //this.ai.ClickImage("resources/more.png"); //1248,133
-
-            bmp.Dispose();
             bmp2.Dispose();
 
             await Task.Delay(100);
-            ai.Click(new Point(1243, 134));
-            ai.Log.Info($"Location: {val}...");
-            return location;//"Prontera West gate";
+            ai.Click(new Point(1243, 134));//close map
+
+            return location;
+        }
+
+        public async Task<bool> IsMapOpen()
+        {
+            Bitmap bmp;
+            Point worldMapImage;
+
+            bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
+            //await Task.Delay(100);
+            worldMapImage = ImageSearch.SearchFromImage(bmp, "resources/world-map.png");
+           // await Task.Delay(100);
+            return !(worldMapImage.X == -1 && worldMapImage.Y == -1);
+        }
+        public async Task OpenMap()
+        {
+            var map = new Point(1188, 49);
+            ai.Click(map); //1188, 49
+            await Task.Delay(100);
+        }
+        public async Task CloseMap()
+        {
+            var isMapOpen = await IsMapOpen();
+            if(isMapOpen)
+                ai.Click(new Point(1243, 134));//close map
+        }
+        //990,395
+        public async Task GoToKafraAgent()
+        {
+            await Task.Delay(500);
+            await ai.Action.ButterflyWing(10000);
+
+            await OpenMap();
+            await Task.Delay(500);
+            var kafraLocationOnMap = new Point(990, 395);
+            ai.Click(kafraLocationOnMap);
+            await CloseMap();
+            await Task.Delay(7000);
+
+            Bitmap bmp = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
+            var kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra.png");            
+            ai.Click(new Point(kafraImg.X, kafraImg.Y - 10));//adjusted click from image
+
+            await Task.Delay(1000);
+            //ai.ClickImage("resources/teleport.png");
+            ai.Click(new Point(1112, 472));//teleport
+            for (int i = 0; i < 10; i++)
+            {
+                ai.ScrollDown(new Point(856, 389));
+
+            }
+        }
+
+        public async Task ClaickScript()
+        {
+            ai.Click(new Point(1300, 10));
+            ai.Click(new Point(1300, 10));
         }
     }
 }

@@ -99,11 +99,26 @@ namespace ROMAssistant
                 else
                 {
                     isIdle = false;
+
                     await Task.Delay(500);
-                    await ai.Action.ButterflyWing();
-                    int milliSecondsToLoad = 25000;
-                    await Task.Delay(milliSecondsToLoad);
-                    
+
+                    var currentLocation = await ai.Action.GetCurrentLocation();
+                    if (currentLocation != "Prontera")
+                    {
+                        await Task.Delay(500);
+                        await ai.Action.ButterflyWing(4000);
+                        //int milliSecondsToLoad = 25000;
+                        //await Task.Delay(milliSecondsToLoad);
+                        await DelayOnLocation(-1);
+                    }
+
+                    var teleport = false;
+                    if (teleport)
+                    {
+                        await ai.Action.ClaickScript();
+                        //await ai.Action.GoToKafraAgent();
+                    }
+
                     // Open MVP Interface
                     ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
                     await ai.Action.OpenMVP();
@@ -117,10 +132,10 @@ namespace ROMAssistant
                     await Task.Delay(500);
                     ai.Click(new Point(950, 690)); // Click Go
 
-                    int delay = getDelay(minimumIndex);
-                    await Task.Delay(delay);
-
-                    await ai.waitForSpawn(Math.Max(0,(minutes[minimumIndex] * 1000 * 60) - delay));
+                    //int delay = getDelay(minimumIndex);
+                    //await Task.Delay(delay);
+                    await DelayOnLocation(minimumIndex);
+                    await ai.waitForSpawn(Math.Max(0,(minutes[minimumIndex] * 1000 * 60) ));//- delay
                     isIdle = true;
                 }
             }
@@ -151,6 +166,48 @@ namespace ROMAssistant
                     break;
             }
             return delay * 1000;
+        }
+
+        public async Task DelayOnLocation(int index)
+        {
+            var arrived = false;
+            int i = 0;
+            while(arrived == false)
+            {
+                if (i > 60) break;
+
+                var currentLocation = await ai.Action.GetCurrentLocation();
+                
+                ai.Log.Info($"Location: {currentLocation}...");
+                
+                if (index == -1 && currentLocation == "Prontera")
+                {
+                    arrived = true;
+                    break;
+                }
+                if ((index == 0 || index == 2) && currentLocation == "Prontera South Gate")
+                {
+                    arrived = true;
+                    break;
+                }
+                if ((index == 1 || index == 3) && currentLocation == "Labyrinth Forest") {
+                    arrived = true;
+                    break;
+                }
+                if(index == 4 && currentLocation == "Prontera West Gate")
+                {
+                    arrived = true;
+                    break;
+                }
+                i++;
+                await Task.Delay(1000);
+            }
+
+            await Task.Delay(500);
+            var mapOpen = await ai.Action.IsMapOpen();
+            if (mapOpen)
+                ai.Click(new Point(1243, 134));//close map
+
         }
         
     }
