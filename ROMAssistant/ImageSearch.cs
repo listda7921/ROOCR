@@ -185,6 +185,26 @@ public static class ImageSearch
         area.Y = Reference.Y;
         area.Width = Width;
         area.Height = Height;
-        return srcImg.Clone(area, srcImg.PixelFormat);
+        //try
+        //{
+        //    srcImg.Clone(area, srcImg.PixelFormat);
+        //}
+        //catch(Exception e)
+        //{
+        //    var ex = e;
+        //}
+
+        return srcImg.cropAtRect(area);
+
+        //return srcImg.Clone(area, srcImg.PixelFormat);
+    }
+    public static Bitmap cropAtRect(this Bitmap b, Rectangle r)
+    {
+        Bitmap nb = new Bitmap(r.Width, r.Height);
+        using (Graphics g = Graphics.FromImage(nb))
+        {
+            g.DrawImage(b, -r.X, -r.Y);
+            return nb;
+        }
     }
 }

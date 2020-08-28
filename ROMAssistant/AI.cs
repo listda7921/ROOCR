@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace ROMAssistant
 {
-    class AI
+    public class AI
     {
         public int width = 1280;
         public int height = 720;
@@ -98,40 +98,61 @@ namespace ROMAssistant
 
         private int FindLDPlayer(string windowTitle)
         {
-            Process[] processlist = Process.GetProcesses();
-
-            foreach (Process process in processlist)
-            {
-                if (!String.IsNullOrEmpty(process.MainWindowTitle))
-                {
-                    Console.WriteLine("Process: {0} ID: {1} Window title: {2}, handle {3}", process.ProcessName, process.Id, process.MainWindowTitle, process.MainWindowHandle);
-                }
-            }
+            Process[] processlist = GetProcesses();
 
             var ld = processlist.Where(p => p.MainWindowTitle == "LDPlayer").FirstOrDefault();
 
             var allChildWindows = new WindowHandleInfo(ld.MainWindowHandle).GetAllChildHandles();
-            //var allChildWindows1 = new WindowHandleInfo(allChildWindows[0]).GetAllChildHandles();
-            //var allChildWindows2 = new WindowHandleInfo(allChildWindows[1]).GetAllChildHandles();
+            var allChildWindows1 = new WindowHandleInfo(allChildWindows[0]).GetAllChildHandles();
+            var allChildWindows2 = new WindowHandleInfo(allChildWindows[1]).GetAllChildHandles();
 
             //Bitmap bmp = ImageSearch.PrintWindow((IntPtr)allChildWindows[0]);
             //Bitmap bmp1 = ImageSearch.PrintWindow((IntPtr)ld.MainWindowHandle);
             //Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)allChildWindows1.FirstOrDefault());
-            //Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)allChildWindows2.FirstOrDefault());
+            ////Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)allChildWindows2.FirstOrDefault());
             //bool script = this.ai.ClickImage("resources/script.png");
+            ////var x = ai.Action.ClickScript();
 
-      
+
 
             //Bitmap Screen = ImageSearch.PrintWindow(ld.MainWindowHandle);
             //var BtnBag = ImageSearch.SearchFromImage(Screen, "resources/bag.png");
             //var BtnMore = ImageSearch.SearchFromImage(Screen, "resources/more.png");
             //var BtnParty = ImageSearch.SearchFromImage(Screen, "resources/party.png");
 
-            //Point point = ImageSearch.SearchFromHandle((IntPtr)ld.MainWindowHandle, "resources/more.png");
-            //Win32.Click((int)allChildWindows1.FirstOrDefault(), point.X, point.Y + 30); // NOX Constant
-            //Win32.Click((int)allChildWindows[0], point.X, point.Y + 30); // NOX Constant//win
-            //Win32.Click((int)allChildWindows[1], point.X, point.Y + 30); // NOX Constant
+            ////Point point = ImageSearch.SearchFromHandle((IntPtr)ld.MainWindowHandle, "resources/more.png");
+            //Point point = new Point(1300, 196);
+            ////Win32.Click((int)allChildWindows1.FirstOrDefault(), point.X, point.Y + 30); // NOX Constant
+            ////Win32.Click((int)allChildWindows[0], point.X, point.Y + 30); // NOX Constant//win
+            ////Win32.Click((int)allChildWindows[1], point.X, point.Y + 30); // NOX Constant
+            //Win32.Click((int)ld.MainWindowHandle, point.X, point.Y + 30); // NOX Constant//win
 
+
+            //var recorder = new WindowHandleInfo(ld.MainWindowHandle).GetAllChildHandles();//GetProcesses();//.Where(p => p.MainWindowTitle == "Operation Recorder").FirstOrDefault();
+            //var recorder2 = new WindowHandleInfo(allChildWindows[0]).GetAllChildHandles();
+
+            //var operationrecorder = recorder2[0];
+            //var opchild = new WindowHandleInfo(operationrecorder).GetAllChildHandles();
+            //var opchild2 = new WindowHandleInfo(ld.MainWindowHandle).GetAllChildHandles();
+            //var opchild3 = new WindowHandleInfo(opchild2[1]).GetAllChildHandles();
+            //var handle = GetProcesses();
+            //        //.SingleOrDefault(x => x.Handle == operationrecorder);//MainWindowTitle.Contains(wName))
+            //        //?.Handle;
+
+
+            //Bitmap bmp3 = ImageSearch.PrintWindow((IntPtr)operationrecorder);
+            //Win32.Click((int)operationrecorder, 415, 452); // NOX Constant//win
+            //                                               //816 532
+            //Bitmap bmp4 = ImageSearch.PrintWindow((IntPtr)ld.MainWindowHandle);
+            //Win32.Click((int)ld.MainWindowHandle, 816, 532);
+
+            //Bitmap bmp5 = ImageSearch.PrintWindow((IntPtr)opchild2[1]);
+            //Win32.Click((int)opchild2[1], 816, 532);
+
+
+
+            //var x = ai.Action.ClickScript((int)allChildWindows[0]);
+            //Win32.SendY((int)allChildWindows[0]);
 
             this.screenHandle = (int)ld.MainWindowHandle;
             int MainWindow = (int)allChildWindows[0];
@@ -145,6 +166,22 @@ namespace ROMAssistant
 
             return MainWindow;
         }
+
+        private static Process[] GetProcesses()
+        {
+            Process[] processlist = Process.GetProcesses();
+
+            foreach (Process process in processlist)
+            {
+                if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                {
+                    Console.WriteLine("Window title: {0}, handle {1}", process.MainWindowTitle, process.MainWindowHandle);
+                }
+            }
+
+            return processlist;
+        }
+
         public bool Click(Point point)
         {
             if (point.X > -1 && point.Y > -1)
@@ -285,18 +322,74 @@ namespace ROMAssistant
             Log.Info("Monster probably dead by now... Idling...");
             await this.ai.Action.CancelAuto(500);
         }
+        public async Task<Point> FindMonsterImage(string imageName)
+        {
+           // var Timer_Mini_extra = 30;
+            Bitmap bmp = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
+            var MonsterImage = ImageSearch.SearchFromImage(bmp, imageName);
+
+            Point TempPoint;
+            //bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
+            //TempPoint = new Point(MonsterImage.X + 360, MonsterImage.Y + 110);
+            //var crop = ImageSearch.CropImage(bmp, TempPoint, 180, 50);
+            //crop.Save($"mob{imageName}.bmp");
+            //Timer_Mini_extra = OCR.ExtractTime(this.ai.OCR.RawOCR(crop));
+            //Log.Info($"{imageName}: {Timer_Mini_extra} minutes");
+            //await Task.Delay(400);
+            return MonsterImage;
+        }
+
+        public async Task<int> GetMonsterSpawnTime(Point point)
+        {
+            var bmp = ImageSearch.PrintWindow((IntPtr)screenHandle);
+            var timeArea = new Point(point.X + 360, point.Y);
+            var crop = ImageSearch.CropImage(bmp, timeArea, 180, 50);
+            //crop.Save($"mob{imageName}.bmp");
+            int waitTime = OCR.ExtractTime(this.ai.OCR.RawOCR(crop));
+            //Log.Info($"{imageName}: {Timer_Mini_extra} minutes");
+            await Task.Delay(400);
+            return waitTime;
+        }
+
+        public async Task<int> FindRotarZairo()
+        {
+            await this.ai.Action.OpenMVP();
+
+            int spawnTime = 30;
+
+            bool found = false;
+            while (!found)
+            {
+                var MonsterImage = await FindMonsterImage("resources/rotar-zairo.png");
+                if (MonsterImage.X == -1 && MonsterImage.Y == -1)
+                {
+                    //Log.Error("Cannot find a reference point.");
+                    await ai.Action.ClickScript();
+                    await Task.Delay(750);
+                }
+                else
+                {
+                    found = true;
+                    spawnTime = await GetMonsterSpawnTime(MonsterImage);
+                }
+            }
+
+            Log.Info($"Rotar Zairo: {spawnTime} minutes");
+            this.ClickImage("resources/close-button.png");
+            return spawnTime;
+        }
 
         public string getOCRText(Bitmap crop)
-        {
-            return OCR.RawOCR(crop);
-        }
+                {
+                    return OCR.RawOCR(crop);
+                }
 
         public void LogError(string message)
         {
             Log.Error(message);
         }
     }
-    class Interface
+    public class Interface
     {
         public Point BtnBag, BtnMore, BtnParty;
         public Point BtnMVP, BtnSettings;
@@ -308,7 +401,7 @@ namespace ROMAssistant
             this.BtnParty = ImageSearch.SearchFromImage(Screen, "resources/party.png");
         }
     }
-    class Action
+    public class Action
     {
         AI ai;
         public Action(AI ai)
@@ -332,6 +425,11 @@ namespace ROMAssistant
             //    else i++;
             //}
             await Task.Delay(100);
+        }
+        public async Task CloseMVP()
+        {
+            ai.ClickImage("resources/close-button.png");
+            await Task.Delay(300);
         }
         public async Task ClickAuto(int millisecondsDelay)
         {
@@ -365,7 +463,7 @@ namespace ROMAssistant
             if (isMapOpen)
             {
                 ai.Click(new Point(1243, 134));//close map
-                await Task.Delay(100);
+                await Task.Delay(200);
                 ai.Click(map); //1188, 49
             }
             else
@@ -373,7 +471,7 @@ namespace ROMAssistant
                 ai.Click(map); //1188, 49
             }
 
-            await Task.Delay(100);
+            await Task.Delay(300);
 
 
             Bitmap bmp2 = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
@@ -444,17 +542,31 @@ namespace ROMAssistant
             await Task.Delay(1000);
             //ai.ClickImage("resources/teleport.png");
             ai.Click(new Point(1112, 472));//teleport
-            for (int i = 0; i < 10; i++)
-            {
-                ai.ScrollDown(new Point(856, 389));
-
-            }
+            await Task.Delay(1000);
         }
 
-        public async Task ClaickScript()
+        public async Task teleportToGoblinForest()
         {
-            ai.Click(new Point(1300, 10));
-            ai.Click(new Point(1300, 10));
+            await ai.Action.GoToKafraAgent();
+            ai.Click(new Point(532, 331)); //geffen area
+            await Task.Delay(300);
+            //send u
+            Win32.SendU(this.ai.hWnd);
+            await Task.Delay(2000);
+            //1057, 542
+            ai.Click(new Point(1057, 542)); //goblin forest
         }
+
+        public async Task ClickScript()
+        {
+            Win32.SendY(this.ai.hWnd);
+        }
+
+        public async Task GetMoreMinis()
+        {
+
+        }
+
+        
     }
 }

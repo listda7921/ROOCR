@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace ROMAssistant
 {
@@ -92,6 +93,19 @@ namespace ROMAssistant
             Win32.SendMessage(hWnd, WM_LBUTTONUP, 0, MakeLParam(x, y));
             Win32.SendMessage(hWnd, WM_NCHITTEST, 0, MakeLParam(x, y));
         }
+
+        public static void SendY(int hWnd)
+        {
+            Win32.PostMessage(hWnd, WM_KEYDOWN, (int)Keys.Y, 0);
+            Win32.PostMessage(hWnd, WM_KEYUP, (int)Keys.Y, 0);
+        }
+
+        public static void SendU(int hWnd)
+        {
+            Win32.PostMessage(hWnd, WM_KEYDOWN, (int)Keys.U, 0);
+            Win32.PostMessage(hWnd, WM_KEYUP, (int)Keys.U, 0);
+        }
+
         public static void ScrollDown(int hWnd, int x, int y)
         {
             //Win32.SendMessage(hWnd, WM_LBUTTONDOWN, 1, MakeLParam(x, y));

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ROMAssistant.Monsters;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -115,23 +116,44 @@ namespace ROMAssistant
                     var teleport = false;
                     if (teleport)
                     {
-                        await ai.Action.ClaickScript();
-                        //await ai.Action.GoToKafraAgent();
+                        //var rotarTime = await ai.FindRotarZairo();
+                        ////await ai.Action.GoToKafraAgent();
+                        ////await ai.Action.ClickScript();
+                        ////532, 331
+                        //if (rotarTime == 0)
+                        //{
+                        //    await ai.Action.teleportToGoblinForest();
+                        //    await ai.waitForSpawn(Math.Max(0, (0)));//- delay
+                        //}
+                        RotarZairo rotoZairo = new RotarZairo(ai);
+                        MonsterList monsterList = new MonsterList(rotoZairo);
+                        ScanMini scanMini = new ScanMini(ai, new OCR());
+                        var _hunt = new Hunt(monsterList, scanMini);
+                        var mobs = monsterList.GetMonsterList();
+                        await _hunt.GatherMobTimes(mobs);
+                        await _hunt.HuntMonsters(mobs);
                     }
+                    else
+                    {
 
-                    // Open MVP Interface
-                    ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
-                    await ai.Action.OpenMVP();
 
-                    await Task.Delay(500);
 
-                    // Click Selected MVP
-                    Point ReferencePoint = new Point(110, 125); // Smokie
-                    ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
-                    ai.Click(ReferencePoint);
-                    await Task.Delay(500);
-                    ai.Click(new Point(950, 690)); // Click Go
+                        // Open MVP Interface
+                        ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
+                        await ai.Action.OpenMVP();
 
+                        await Task.Delay(500);
+
+                        // Click Selected MVP
+                        Point ReferencePoint = new Point(110, 125); // Smokie
+                        ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
+                        ai.Click(ReferencePoint);
+                        await Task.Delay(500);
+                        ai.Click(new Point(950, 690)); // Click Go
+                    
+                    
+                    
+                    }
                     //int delay = getDelay(minimumIndex);
                     //await Task.Delay(delay);
                     await DelayOnLocation(minimumIndex);
@@ -210,5 +232,55 @@ namespace ROMAssistant
 
         }
         
+    }
+
+    public class MonsterList {
+        public RotarZairo _rotoZairo;
+
+        public MonsterList(RotarZairo rotoZairo) {
+            _rotoZairo = rotoZairo;
+        }
+
+        public List<Monster> GetMonsterList()
+        {
+            var monsters = new List<Monster>();
+            
+            monsters.Add(_rotoZairo);
+
+            return monsters;
+        }
+    }
+
+    public class Hunt
+    {
+        public ScanMini _scanMini;
+        public Hunt(
+            MonsterList monsterList,
+            ScanMini scanMini
+            ) {
+            _scanMini = scanMini;
+        }
+
+        public async Task GatherMobTimes(List<Monster> monsters)
+        {
+            await _scanMini.ScanAllMonsters(monsters);
+        }
+
+        public async Task HuntMonsters(List<Monster> monsters)
+        {
+            IEnumerable<Monster> mobs = monsters.OrderBy(m => m.MinutesToSpawn);
+            foreach (var mob in mobs)
+            {
+               await mob.GoToLocation();
+               await mob.Hunt();
+            }
+        }
+
+
+
+
+
+
+
     }
 }

@@ -6,10 +6,18 @@ using System.Threading.Tasks;
 
 namespace ROMAssistant
 {
-    public class Monster
+    public abstract class Monster
     {
-        public string Name { get; set; }
-        public string Location { get; set; }
-        public int MinutesToSpawn { get; set; }
+        public int FightTime { get; set; } = 30;
+        public int MinutesToSpawn { get; set; } = 30; 
+        //public string ImagePath { get; set; }
+
+        public abstract Task<int> GetSecondsToSpawn();
+        public abstract Task GoToLocation();
+
+        public abstract Task Hunt();
+
+        public abstract string GetImagePath();
+
     }
 }
