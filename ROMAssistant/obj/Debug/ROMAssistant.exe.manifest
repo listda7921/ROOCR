@@ -109,19 +109,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>p3Spv7vPy7BwdeQVajYTdqmIT0cbdDopTaBKoJHIuxc=</dsig:DigestValue>
+        <dsig:DigestValue>7axT7zaJ6/k7KnNbISPAu1A37Y+lT1vCIgbdwo5P4uA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ROMAssistant.exe" size="59872">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ROMAssistant.exe" size="61920">
       <assemblyIdentity name="ROMAssistant" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>9htlhJoCDEuYMOa9tEHzSZDQs0Xv7YUdM2CLMKw5z4o=</dsig:DigestValue>
+        <dsig:DigestValue>BweKLVZxSnVkq0pBOqKwJuDx52P7tvCsSnVgRbDmPjQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

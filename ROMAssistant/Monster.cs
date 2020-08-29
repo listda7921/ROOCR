@@ -19,5 +19,12 @@ namespace ROMAssistant
 
         public abstract string GetImagePath();
 
+        public abstract MonsterType GetMonsterType();
+
+    }
+
+    public enum MonsterType
+    {
+        RotorZario
     }
 }

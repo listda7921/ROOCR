@@ -113,7 +113,7 @@ namespace ROMAssistant
                         await DelayOnLocation(-1);
                     }
 
-                    var teleport = false;
+                    var teleport = true;
                     if (teleport)
                     {
                         //var rotarTime = await ai.FindRotarZairo();
@@ -190,7 +190,7 @@ namespace ROMAssistant
             return delay * 1000;
         }
 
-        public async Task DelayOnLocation(int index)
+        public async Task DelayOnLocation(int? index, MonsterType? monsterType = null)
         {
             var arrived = false;
             int i = 0;
@@ -219,6 +219,10 @@ namespace ROMAssistant
                 if(index == 4 && currentLocation == "Prontera West Gate")
                 {
                     arrived = true;
+                    break;
+                }
+                if(monsterType == MonsterType.RotorZario && currentLocation == "Goblin Forest")
+                {
                     break;
                 }
                 i++;

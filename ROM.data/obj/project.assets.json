@@ -45,12 +45,11 @@
       ]
     },
     "NETStandard.Library/2.0.3": {
-      "sha512": "st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
+      "sha512": "emzNJIcY1KDVHbmJziq5w+I5ivvPcxiJKw61Ql7qzBO/dVeVnU9IwrugywThmkCz/4sJVH5XvM3C52DLzFxWTQ==",
       "type": "package",
       "path": "netstandard.library/2.0.3",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
         "build/netstandard2.0/NETStandard.Library.targets",
@@ -170,7 +169,8 @@
         "build/netstandard2.0/ref/netstandard.xml",
         "lib/netstandard1.0/_._",
         "netstandard.library.2.0.3.nupkg.sha512",
-        "netstandard.library.nuspec"
+        "netstandard.library.nuspec",
+        "paket-installmodel.cache"
       ]
     }
   },
@@ -180,17 +180,21 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\listd\\.nuget\\packages\\": {}
+    "C:\\Users\\listd\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj",
+      "projectUniqueName": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj",
       "projectName": "ROM.data",
-      "projectPath": "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj",
+      "projectPath": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj",
       "packagesPath": "C:\\Users\\listd\\.nuget\\packages\\",
-      "outputPath": "C:\\projects\\ROOCR\\ROM.data\\obj\\",
+      "outputPath": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
         "C:\\Users\\listd\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"

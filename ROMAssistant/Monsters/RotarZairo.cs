@@ -12,6 +12,7 @@ namespace ROMAssistant.Monsters
     {
         public string ImagePath = "resources/rotar-zairo.png";
         public AI _ai;
+        public MonsterType Type = MonsterType.RotorZario;
 
         public RotarZairo(AI ai) {
             _ai = ai;
@@ -29,10 +30,17 @@ namespace ROMAssistant.Monsters
             return 1;
         }
 
+        public override MonsterType GetMonsterType()
+        {
+            return Type;
+        }
+
         public override async Task GoToLocation()
         {
             //throw new NotImplementedException();
             await _ai.Action.teleportToGoblinForest();
+            //await atLocation == true
+            await _ai.Action.DelayOnLocation(MonsterType.RotorZario);
         }
 
         public override async Task Hunt()

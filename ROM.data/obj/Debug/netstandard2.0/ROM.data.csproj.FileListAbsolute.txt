@@ -7,3 +7,12 @@ C:\projects\ROOCR\ROM.data\obj\Debug\netstandard2.0\ROM.data.AssemblyInfo.cs
 C:\projects\ROOCR\ROM.data\obj\Debug\netstandard2.0\ROM.data.csproj.CoreCompileInputs.cache
 C:\projects\ROOCR\ROM.data\obj\Debug\netstandard2.0\ROM.data.dll
 C:\projects\ROOCR\ROM.data\obj\Debug\netstandard2.0\ROM.data.pdb
+D:\Code\romobile\ro-mobile-assistant\ROM.data\bin\Debug\netstandard2.0\ROM.data.deps.json
+D:\Code\romobile\ro-mobile-assistant\ROM.data\bin\Debug\netstandard2.0\ROM.data.dll
+D:\Code\romobile\ro-mobile-assistant\ROM.data\bin\Debug\netstandard2.0\ROM.data.pdb
+D:\Code\romobile\ro-mobile-assistant\ROM.data\obj\Debug\netstandard2.0\ROM.data.csprojAssemblyReference.cache
+D:\Code\romobile\ro-mobile-assistant\ROM.data\obj\Debug\netstandard2.0\ROM.data.AssemblyInfoInputs.cache
+D:\Code\romobile\ro-mobile-assistant\ROM.data\obj\Debug\netstandard2.0\ROM.data.AssemblyInfo.cs
+D:\Code\romobile\ro-mobile-assistant\ROM.data\obj\Debug\netstandard2.0\ROM.data.csproj.CoreCompileInputs.cache
+D:\Code\romobile\ro-mobile-assistant\ROM.data\obj\Debug\netstandard2.0\ROM.data.dll
+D:\Code\romobile\ro-mobile-assistant\ROM.data\obj\Debug\netstandard2.0\ROM.data.pdb

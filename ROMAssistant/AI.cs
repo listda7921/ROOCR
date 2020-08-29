@@ -100,7 +100,7 @@ namespace ROMAssistant
         {
             Process[] processlist = GetProcesses();
 
-            var ld = processlist.Where(p => p.MainWindowTitle == "LDPlayer").FirstOrDefault();
+            var ld = processlist.Where(p => p.MainWindowTitle == "listda").FirstOrDefault();
 
             var allChildWindows = new WindowHandleInfo(ld.MainWindowHandle).GetAllChildHandles();
             var allChildWindows1 = new WindowHandleInfo(allChildWindows[0]).GetAllChildHandles();
@@ -566,7 +566,32 @@ namespace ROMAssistant
         {
 
         }
+        public async Task DelayOnLocation(MonsterType? monsterType = null)
+        {
+            var arrived = false;
+            int i = 0;
+            while (arrived == false)
+            {
+                if (i > 60) break;
 
-        
+                var currentLocation = await ai.Action.GetCurrentLocation();
+
+                ai.Log.Info($"Location: {currentLocation}...");
+
+                if (monsterType == MonsterType.RotorZario && currentLocation == "Goblin Forest")
+                {
+                    break;
+                }
+                i++;
+                await Task.Delay(1000);
+            }
+
+            await Task.Delay(500);
+            var mapOpen = await ai.Action.IsMapOpen();
+            if (mapOpen)
+                ai.Click(new Point(1243, 134));//close map
+
+        }
+
     }
 }
