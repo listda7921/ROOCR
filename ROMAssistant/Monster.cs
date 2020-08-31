@@ -20,11 +20,19 @@ namespace ROMAssistant
         public abstract string GetImagePath();
 
         public abstract MonsterType GetMonsterType();
+        public abstract string GetName();
+        public abstract string GetSpawnLocation();
+        public abstract int GetFightTime();
 
     }
 
     public enum MonsterType
     {
-        RotorZario
+        RotorZario,
+        Smokie,
+        EclipseS,
+        EclipseL,
+        Mastering,
+        VocalWG
     }
 }

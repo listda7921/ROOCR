@@ -100,7 +100,7 @@ namespace ROMAssistant
         {
             Process[] processlist = GetProcesses();
 
-            var ld = processlist.Where(p => p.MainWindowTitle == "listda").FirstOrDefault();
+            var ld = processlist.Where(p => p.MainWindowTitle == "LDPlayer").FirstOrDefault();
 
             var allChildWindows = new WindowHandleInfo(ld.MainWindowHandle).GetAllChildHandles();
             var allChildWindows1 = new WindowHandleInfo(allChildWindows[0]).GetAllChildHandles();
@@ -322,6 +322,54 @@ namespace ROMAssistant
             Log.Info("Monster probably dead by now... Idling...");
             await this.ai.Action.CancelAuto(500);
         }
+
+        public async Task waitForSpawn(int milliseconds = 100, int fightTime = 30000)
+        {
+            await Task.Delay(milliseconds);
+            isHunting = true;
+            Task huntingDelayTimer = Task.Delay(ai.Settings.huntingDelay * 1000);
+
+
+
+            while (isHunting == true)
+            {
+                var mapOpen = await ai.Action.IsMapOpen();
+                if (mapOpen)
+                    ai.Click(new Point(1243, 134));//close map
+                Log.Info("Searching for monster...");
+                if (huntingDelayTimer.IsCompleted == true)
+                {
+                    isHunting = false;
+                    Log.Error("Cannot find/attack monster over a given period (huntingDelay)...");
+                }
+                else
+                {
+                    await Task.Delay(250);
+                }
+                // Use Fly Wing
+                ai.Click(new Point(ai.Settings.flyWing[0], ai.Settings.flyWing[1]));
+                await Task.Delay(400);
+                // Open Auto
+                await this.ai.Action.ClickAuto(500);
+                // Search for mini indicator ()
+
+                Bitmap Screen = ImageSearch.PrintWindow((IntPtr)screenHandle);
+                Point spawnmini = ImageSearch.SearchFromImage(Screen, "resources/miniboss-indicator.png", 0.9);
+                if (spawnmini.X >= 0 && spawnmini.Y >= 0)
+                {
+                    spawnmini.Y = spawnmini.Y - 25;
+                    ai.Click(spawnmini);
+                    Log.Success("Found target! Attacking...");
+                    await Task.Delay(fightTime);
+                    isHunting = false;
+                }
+                await Task.Delay(500);
+                await this.ai.Action.ClickAuto(500); // Close Auto
+            }
+            isHunting = false;
+            Log.Info("Monster probably dead by now... Idling...");
+            await this.ai.Action.CancelAuto(500);
+        }
         public async Task<Point> FindMonsterImage(string imageName)
         {
            // var Timer_Mini_extra = 30;
@@ -415,12 +463,12 @@ namespace ROMAssistant
             //Bitmap bmp = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
             //bool script = this.ai.ClickImage("resources/script.png");
             bool closeButton = this.ai.ClickImage("resources/close-button.png");
-                await Task.Delay(500);
-                bool more = this.ai.ClickImage("resources/more.png");
-                await Task.Delay(250);
-                bool mvp = this.ai.ClickImage("resources/mvp.png");
-                await Task.Delay(1000);
-                //this.ai.ClickImage("resources/close-button.png");
+            await Task.Delay(500);
+            bool more = this.ai.ClickImage("resources/more.png");
+            await Task.Delay(250);
+            bool mvp = this.ai.ClickImage("resources/mvp.png");
+            await Task.Delay(1000);
+            //this.ai.ClickImage("resources/close-button.png");
             //    if (closeButton && more && mvp) continue;
             //    else i++;
             //}
@@ -428,7 +476,12 @@ namespace ROMAssistant
         }
         public async Task CloseMVP()
         {
-            ai.ClickImage("resources/close-button.png");
+            var closed = ai.ClickImage("resources/close-button.png");
+            if (!closed)
+            {
+                await Task.Delay(300);
+                ai.ClickImage("resources/close-button.png");
+            }
             await Task.Delay(300);
         }
         public async Task ClickAuto(int millisecondsDelay)
@@ -456,7 +509,7 @@ namespace ROMAssistant
         {
 
             await Task.Delay(200);
-            
+
             var isMapOpen = await IsMapOpen();
 
             var map = new Point(1188, 49);
@@ -489,6 +542,10 @@ namespace ROMAssistant
             else if (val.Contains("West")) location = "Prontera West Gate";
             else if (val.Contains("Lab")) location = "Labyrinth Forest";
             else if (val.Contains("SDuth")) location = "Prontera South Gate";
+            else if (val.Contains("GDblin FDrest") 
+                || val.Contains("GDblin") 
+                || val.Contains("Goblin") 
+                || val.Contains("Goblin Forest")) location = "Goblin Forest";
             var westgate = val.Length;
 
             bmp2.Dispose();
@@ -526,8 +583,9 @@ namespace ROMAssistant
         public async Task GoToKafraAgent()
         {
             await Task.Delay(500);
-            await ai.Action.ButterflyWing(10000);
-
+            await ai.Action.ButterflyWing();
+            await Task.Delay(3000);
+            await DelayOnLocation();
             await OpenMap();
             await Task.Delay(500);
             var kafraLocationOnMap = new Point(990, 395);
@@ -536,13 +594,32 @@ namespace ROMAssistant
             await Task.Delay(7000);
 
             Bitmap bmp = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
-            var kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra.png");            
-            ai.Click(new Point(kafraImg.X, kafraImg.Y - 10));//adjusted click from image
+            await Task.Delay(250);
+            Point kafraImg = await GetKafraImage(bmp);
+            await Task.Delay(250);
+            Bitmap bmp2 = ImageSearch.CropImage(bmp, kafraImg);
+            ai.Click(new Point(kafraImg.X + 2, kafraImg.Y - 2));//adjusted click from image
 
             await Task.Delay(1000);
             //ai.ClickImage("resources/teleport.png");
             ai.Click(new Point(1112, 472));//teleport
-            await Task.Delay(1000);
+            await Task.Delay(2000);
+        }
+
+        private async Task<Point> GetKafraImage(Bitmap bmp)
+        {
+            var kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra.png");
+            if (kafraImg.X == -1 && kafraImg.Y == -1)
+            {
+                for (int i = 0; i <= 10; i++)
+                {
+                    await Task.Delay(1000);
+                    kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra.png");
+                    if (kafraImg.X != -1 && kafraImg.Y != -1) continue;
+                    if (i == 10) ai.LogError("Couldnt find Kafra image");
+                }
+            }
+            return kafraImg;
         }
 
         public async Task teleportToGoblinForest()
@@ -560,6 +637,12 @@ namespace ROMAssistant
         public async Task ClickScript()
         {
             Win32.SendY(this.ai.hWnd);
+            await Task.Delay(350);
+        }
+
+        public async Task ScrollDown()
+        {
+            Win32.ScrollTo((IntPtr)this.ai.hWnd, 10);
         }
 
         public async Task GetMoreMinis()
@@ -577,8 +660,33 @@ namespace ROMAssistant
                 var currentLocation = await ai.Action.GetCurrentLocation();
 
                 ai.Log.Info($"Location: {currentLocation}...");
-
+                
+                if (monsterType == null && currentLocation == "Prontera")
+                {
+                    arrived = true;
+                    break;
+                }
                 if (monsterType == MonsterType.RotorZario && currentLocation == "Goblin Forest")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.Smokie && currentLocation == "Prontera South Gate")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.EclipseS && currentLocation == "Prontera South Gate")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.EclipseL && currentLocation == "Labyrinth Forest")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.Mastering && currentLocation == "Labyrinth Forest")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.VocalWG && currentLocation == "Prontera West Gate")
                 {
                     break;
                 }
@@ -591,6 +699,36 @@ namespace ROMAssistant
             if (mapOpen)
                 ai.Click(new Point(1243, 134));//close map
 
+        }
+
+        public async Task RouteToMob(int minimumIndex, MonsterType? type = null)
+        {
+            // Open MVP Interface
+           // ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
+            await ai.Action.OpenMVP();
+
+            await Task.Delay(500);
+
+            // Click Selected MVP
+            Point ReferencePoint = new Point(110, 125); // Smokie
+            ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
+            ai.Click(ReferencePoint);
+            await Task.Delay(500);
+            ai.Click(new Point(950, 690)); // Click Go
+            await DelayOnLocation(type);
+        }
+
+        public async Task UseButterFlyWing()
+        {
+            //var currentLocation = await ai.Action.GetCurrentLocation();
+            //if (currentLocation != "Prontera")
+            //{
+                await Task.Delay(500);
+                await ai.Action.ButterflyWing(4000);
+                //int milliSecondsToLoad = 25000;
+                //await Task.Delay(milliSecondsToLoad);
+                await DelayOnLocation();
+            //}
         }
 
     }

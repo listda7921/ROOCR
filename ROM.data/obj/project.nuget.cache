@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "RvPCDkXmEpTPZstACLJkh+lTM93ky5Vi70HO3y/3KbzPRBHLqphr8rFE4A2oTf6w+maPHtJuzcKGc0pG0Z4IMA==",
+  "dgSpecHash": "kKQTjGke3q1O+yttiziJ18p5CjJMIz3NDyS5mkgHTFKYW6b9atTcwtSzKWyahEp+w8+/OmcvLs+nPyYOeJPr3w==",
   "success": true,
-  "projectFilePath": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj",
+  "projectFilePath": "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj",
   "expectedPackageFiles": [
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\listd\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\listd\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
   ],
   "logs": []

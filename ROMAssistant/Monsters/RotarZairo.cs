@@ -13,6 +13,9 @@ namespace ROMAssistant.Monsters
         public string ImagePath = "resources/rotar-zairo.png";
         public AI _ai;
         public MonsterType Type = MonsterType.RotorZario;
+        public string Name = "Rotor Zairo";
+        public string Location = "Goblin Forest";
+        public new int FightTime = 60;
 
         public RotarZairo(AI ai) {
             _ai = ai;
@@ -37,16 +40,31 @@ namespace ROMAssistant.Monsters
 
         public override async Task GoToLocation()
         {
-            //throw new NotImplementedException();
+            var currentLocation = await _ai.Action.GetCurrentLocation();
+            if (currentLocation == GetSpawnLocation()) return;
             await _ai.Action.teleportToGoblinForest();
-            //await atLocation == true
             await _ai.Action.DelayOnLocation(MonsterType.RotorZario);
         }
 
         public override async Task Hunt()
         {
             //throw new NotImplementedException();
-            await _ai.waitForSpawn(this.MinutesToSpawn * 1000);
+            await _ai.waitForSpawn(this.MinutesToSpawn * 60 * 1000, FightTime * 1000);
+        }
+
+        public override string GetName()
+        {
+            return Name;
+        }
+
+        public override string GetSpawnLocation()
+        {
+            return Location;
+        }
+
+        public override int GetFightTime()
+        {
+            return FightTime;
         }
     }
 }

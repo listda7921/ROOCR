@@ -102,18 +102,9 @@ namespace ROMAssistant
                     isIdle = false;
 
                     await Task.Delay(500);
+                    await ButterFlyWing();
 
-                    var currentLocation = await ai.Action.GetCurrentLocation();
-                    if (currentLocation != "Prontera")
-                    {
-                        await Task.Delay(500);
-                        await ai.Action.ButterflyWing(4000);
-                        //int milliSecondsToLoad = 25000;
-                        //await Task.Delay(milliSecondsToLoad);
-                        await DelayOnLocation(-1);
-                    }
-
-                    var teleport = true;
+                    var teleport = false;
                     if (teleport)
                     {
                         //var rotarTime = await ai.FindRotarZairo();
@@ -125,45 +116,68 @@ namespace ROMAssistant
                         //    await ai.Action.teleportToGoblinForest();
                         //    await ai.waitForSpawn(Math.Max(0, (0)));//- delay
                         //}
-                        RotarZairo rotoZairo = new RotarZairo(ai);
-                        MonsterList monsterList = new MonsterList(rotoZairo);
-                        ScanMini scanMini = new ScanMini(ai, new OCR());
-                        var _hunt = new Hunt(monsterList, scanMini);
-                        var mobs = monsterList.GetMonsterList();
-                        await _hunt.GatherMobTimes(mobs);
-                        await _hunt.HuntMonsters(mobs);
+                        var active = true;
+                        while (active)
+                        {
+                            //RotarZairo rotoZairo = new RotarZairo(ai);
+                            Smokie smokie = new Smokie(ai);
+                            MonsterList monsterList = new MonsterList(
+                                //rotoZairo, 
+                                smokie
+                                );
+                            ScanMini scanMini = new ScanMini(ai, new OCR(), ai.Log);
+
+                            var _hunt = new Hunt(scanMini);
+                            var mobs = monsterList.GetMonsterList();
+                            await _hunt.GatherMobTimes(mobs);
+                            await _hunt.HuntMonsters(mobs);
+
+                        }
                     }
                     else
                     {
+                        await RouteToMob(minimumIndex);
 
-
-
-                        // Open MVP Interface
-                        ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
-                        await ai.Action.OpenMVP();
-
-                        await Task.Delay(500);
-
-                        // Click Selected MVP
-                        Point ReferencePoint = new Point(110, 125); // Smokie
-                        ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
-                        ai.Click(ReferencePoint);
-                        await Task.Delay(500);
-                        ai.Click(new Point(950, 690)); // Click Go
-                    
-                    
-                    
                     }
                     //int delay = getDelay(minimumIndex);
                     //await Task.Delay(delay);
                     await DelayOnLocation(minimumIndex);
-                    await ai.waitForSpawn(Math.Max(0,(minutes[minimumIndex] * 1000 * 60) ));//- delay
+                    await ai.waitForSpawn(Math.Max(0, (minutes[minimumIndex] * 1000 * 60)));//- delay
                     isIdle = true;
                 }
             }
             return true;
         
          }
+
+        private async Task ButterFlyWing()
+        {
+            var currentLocation = await ai.Action.GetCurrentLocation();
+            if (currentLocation != "Prontera")
+            {
+                await Task.Delay(500);
+                await ai.Action.ButterflyWing(4000);
+                //int milliSecondsToLoad = 25000;
+                //await Task.Delay(milliSecondsToLoad);
+                await DelayOnLocation(-1);
+            }
+        }
+
+        private async Task RouteToMob(int minimumIndex)
+        {
+            // Open MVP Interface
+            ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
+            await ai.Action.OpenMVP();
+
+            await Task.Delay(500);
+
+            // Click Selected MVP
+            Point ReferencePoint = new Point(110, 125); // Smokie
+            ReferencePoint = new Point(ReferencePoint.X + 110, ReferencePoint.Y + (110 * minimumIndex));//-55
+            ai.Click(ReferencePoint);
+            await Task.Delay(500);
+            ai.Click(new Point(950, 690)); // Click Go
+        }
 
         public int getDelay(int minimumIndex)
         {
@@ -239,17 +253,22 @@ namespace ROMAssistant
     }
 
     public class MonsterList {
-        public RotarZairo _rotoZairo;
-
-        public MonsterList(RotarZairo rotoZairo) {
-            _rotoZairo = rotoZairo;
+        //public RotarZairo _rotoZairo;
+        public Smokie _smokie;
+        public MonsterList(
+            //RotarZairo rotoZairo 
+            Smokie smokie
+            ) {
+           // _rotoZairo = rotoZairo;
+            _smokie = smokie;
         }
 
         public List<Monster> GetMonsterList()
         {
             var monsters = new List<Monster>();
             
-            monsters.Add(_rotoZairo);
+            //monsters.Add(_rotoZairo);
+            monsters.Add(_smokie);
 
             return monsters;
         }
@@ -259,7 +278,6 @@ namespace ROMAssistant
     {
         public ScanMini _scanMini;
         public Hunt(
-            MonsterList monsterList,
             ScanMini scanMini
             ) {
             _scanMini = scanMini;
@@ -278,6 +296,12 @@ namespace ROMAssistant
                await mob.GoToLocation();
                await mob.Hunt();
             }
+        }
+
+        public async Task HuntMonster(Monster monster)
+        {
+            await monster.GoToLocation();
+            await monster.Hunt();
         }
 
 

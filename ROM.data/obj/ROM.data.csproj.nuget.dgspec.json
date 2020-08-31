@@ -1,21 +1,18 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj": {}
+    "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj": {}
   },
   "projects": {
-    "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj": {
+    "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj",
+        "projectUniqueName": "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj",
         "projectName": "ROM.data",
-        "projectPath": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\ROM.data.csproj",
+        "projectPath": "C:\\projects\\ROOCR\\ROM.data\\ROM.data.csproj",
         "packagesPath": "C:\\Users\\listd\\.nuget\\packages\\",
-        "outputPath": "D:\\Code\\romobile\\ro-mobile-assistant\\ROM.data\\obj\\",
+        "outputPath": "C:\\projects\\ROOCR\\ROM.data\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
           "C:\\Users\\listd\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"

@@ -106,6 +106,21 @@ namespace ROMAssistant
             Win32.PostMessage(hWnd, WM_KEYUP, (int)Keys.U, 0);
         }
 
+        [DllImport("user32.dll")]
+        static extern int SetScrollPos(IntPtr hWnd, int nBar,
+                int nPos, bool bRedraw);
+
+        [DllImport("User32.Dll", EntryPoint = "PostMessageA")]
+        static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
+
+
+
+        public static void ScrollTo(IntPtr hWnd, int Position)
+        {
+            SetScrollPos(hWnd, 0x1, Position, true);
+            PostMessage(hWnd, 0x115, 4 + 0x10000 * Position, 0);
+        }
+
         public static void ScrollDown(int hWnd, int x, int y)
         {
             //Win32.SendMessage(hWnd, WM_LBUTTONDOWN, 1, MakeLParam(x, y));

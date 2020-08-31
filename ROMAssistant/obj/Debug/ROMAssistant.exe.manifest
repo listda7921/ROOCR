@@ -102,26 +102,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ROM.data.dll" size="5120">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ROM.data.dll" size="3584">
       <assemblyIdentity name="ROM.data" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>7axT7zaJ6/k7KnNbISPAu1A37Y+lT1vCIgbdwo5P4uA=</dsig:DigestValue>
+        <dsig:DigestValue>ToWJO21Pakp1rKVyWyZ4I9s3Dd3UwoFTI2AfyH6AVI0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ROMAssistant.exe" size="61920">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ROMAssistant.exe" size="85984">
       <assemblyIdentity name="ROMAssistant" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>BweKLVZxSnVkq0pBOqKwJuDx52P7tvCsSnVgRbDmPjQ=</dsig:DigestValue>
+        <dsig:DigestValue>8XkHGvrXQfExd3GQJ7Nl1pD/rsIS/g2IcslaPgWC/0s=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

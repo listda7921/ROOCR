@@ -7,9 +7,5 @@ namespace ROM.data
 {
     public class Mini
     {
-        public async Task OpenMVP() 
-        {
-            await Task.Delay(100);
-        }
     }
 }
