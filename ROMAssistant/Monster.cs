@@ -9,8 +9,9 @@ namespace ROMAssistant
     public abstract class Monster
     {
         public int FightTime { get; set; } = 30;
-        public int MinutesToSpawn { get; set; } = 30; 
+        public int MinutesToSpawn { get; set; } = 30;
         //public string ImagePath { get; set; }
+        public int MonsterImagePositionOffsetY { get; set; } = 0;
 
         public abstract Task<int> GetSecondsToSpawn();
         public abstract Task GoToLocation();
@@ -23,6 +24,10 @@ namespace ROMAssistant
         public abstract string GetName();
         public abstract string GetSpawnLocation();
         public abstract int GetFightTime();
+        public virtual int GetMonsterImagePositionOffsetY()
+        {
+            return MonsterImagePositionOffsetY;
+        }
 
     }
 
@@ -33,6 +38,9 @@ namespace ROMAssistant
         EclipseS,
         EclipseL,
         Mastering,
-        VocalWG
+        VocalWG,
+        VocalL,
+        VagabondWolf,
+        Toad
     }
 }

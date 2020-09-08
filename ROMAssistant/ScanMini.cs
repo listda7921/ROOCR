@@ -50,6 +50,7 @@ namespace ROMAssistant
                 var leftBmp = ImageSearch.CropImage(bmp, new Point(0,0), 720, 670);
                 Point location = Scan(leftBmp, monster.GetImagePath());
                 if (location.X == -1 && location.Y == -1) continue;
+                location.Y += monster.GetMonsterImagePositionOffsetY();
                 location.X += 360;
                 Bitmap crop = ImageSearch.CropImage(bmp, location, 185, 60);
                 monster.MinutesToSpawn = OCR.ExtractTime(_OCR.RawOCR(crop));

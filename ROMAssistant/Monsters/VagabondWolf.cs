@@ -6,27 +6,22 @@ using System.Threading.Tasks;
 
 namespace ROMAssistant.Monsters
 {
-    public class VocalWestGate : Monster
+    public class VagabondWolf : Monster
     {
-        public string ImagePath = "resources/Mastering.png";
-        public MonsterType Type = MonsterType.VocalWG;
-        public string Name = "Vocal (West Gate)";
-        public string Location = "Prontera West Gate";
-        public new int MonsterImagePositionOffsetY = 110;
+        public string ImagePath = "resources/vagabond-wolf.png";
+        public MonsterType Type = MonsterType.VagabondWolf;
+        public string Name = "Vagabond Wolf";
+        public string Location = "Sograt Desert";
+        public new int FightTime = 70;
 
         public AI _ai;
-        public VocalWestGate(AI ai)
+        public VagabondWolf(AI ai)
         {
             _ai = ai;
         }
         public override int GetFightTime()
         {
             return FightTime;
-        }
-
-        public override int GetMonsterImagePositionOffsetY()
-        {
-            return MonsterImagePositionOffsetY;
         }
 
         public override string GetImagePath()
@@ -36,7 +31,7 @@ namespace ROMAssistant.Monsters
 
         public override MonsterType GetMonsterType()
         {
-            return Type;
+            return MonsterType.VagabondWolf;
         }
 
         public override string GetName()
@@ -58,8 +53,8 @@ namespace ROMAssistant.Monsters
         {
             var currentLocation = await _ai.Action.GetCurrentLocation();
             if (currentLocation == GetSpawnLocation()) return;
-            await _ai.Action.UseButterFlyWing();
-            await _ai.Action.RouteToMob(4, Type);//eclipse SG
+            await _ai.Action.teleportToDesert();
+            await _ai.Action.DelayOnLocation(Type);
         }
 
         public override async Task Hunt()

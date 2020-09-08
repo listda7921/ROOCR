@@ -108,6 +108,9 @@
     <Compile Include="Monsters\Mastering.cs" />
     <Compile Include="Monsters\RotarZairo.cs" />
     <Compile Include="Monsters\Smokie.cs" />
+    <Compile Include="Monsters\Toad.cs" />
+    <Compile Include="Monsters\VagabondWolf.cs" />
+    <Compile Include="Monsters\VocalLabyrinth.cs" />
     <Compile Include="Monsters\VocalWestGate.cs" />
     <Compile Include="ScanMini.cs" />
     <Compile Include="Scheduler.cs" />

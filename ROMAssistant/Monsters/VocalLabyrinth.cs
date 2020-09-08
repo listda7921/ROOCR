@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZedGraph;
 
 namespace ROMAssistant.Monsters
 {
-    public class VocalWestGate : Monster
+    public class VocalLabyrinth : Monster
     {
-        public string ImagePath = "resources/Mastering.png";
-        public MonsterType Type = MonsterType.VocalWG;
-        public string Name = "Vocal (West Gate)";
-        public string Location = "Prontera West Gate";
-        public new int MonsterImagePositionOffsetY = 110;
+        public string ImagePath = "resources/Basilisk.png";
+        public MonsterType Type = MonsterType.VocalL;
+        public string Name = "Vocal (Labyrinth)";
+        public string Location = "Labyrinth Forest";
+        public new int MonsterImagePositionOffsetY = -110;
 
         public AI _ai;
-        public VocalWestGate(AI ai)
+        public VocalLabyrinth(AI ai)
         {
             _ai = ai;
         }
@@ -59,7 +60,7 @@ namespace ROMAssistant.Monsters
             var currentLocation = await _ai.Action.GetCurrentLocation();
             if (currentLocation == GetSpawnLocation()) return;
             await _ai.Action.UseButterFlyWing();
-            await _ai.Action.RouteToMob(4, Type);//eclipse SG
+            await _ai.Action.RouteToMob(3, Type);//eclipse SG
         }
 
         public override async Task Hunt()

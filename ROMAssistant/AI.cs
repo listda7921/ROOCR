@@ -542,10 +542,12 @@ namespace ROMAssistant
             else if (val.Contains("West")) location = "Prontera West Gate";
             else if (val.Contains("Lab")) location = "Labyrinth Forest";
             else if (val.Contains("SDuth")) location = "Prontera South Gate";
-            else if (val.Contains("GDblin FDrest") 
-                || val.Contains("GDblin") 
-                || val.Contains("Goblin") 
+            else if (val.Contains("GDblin FDrest")
+                || val.Contains("GDblin")
+                || val.Contains("Goblin")
                 || val.Contains("Goblin Forest")) location = "Goblin Forest";
+            else if (val.Contains("Desert")) location = "Sograt Desert";
+            else if (val.Contains("Cave")) location = "Underwater Cave";
             var westgate = val.Length;
 
             bmp2.Dispose();
@@ -584,10 +586,10 @@ namespace ROMAssistant
         {
             await Task.Delay(500);
             await ai.Action.ButterflyWing();
-            await Task.Delay(3000);
+            await Task.Delay(4000);
             await DelayOnLocation();
             await OpenMap();
-            await Task.Delay(500);
+            await Task.Delay(600);
             var kafraLocationOnMap = new Point(990, 395);
             ai.Click(kafraLocationOnMap);
             await CloseMap();
@@ -608,13 +610,14 @@ namespace ROMAssistant
 
         private async Task<Point> GetKafraImage(Bitmap bmp)
         {
-            var kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra.png");
+            var kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra2.png");
             if (kafraImg.X == -1 && kafraImg.Y == -1)
             {
-                for (int i = 0; i <= 10; i++)
+                for (int i = 0; i <= 20; i++)
                 {
-                    await Task.Delay(1000);
-                    kafraImg = ImageSearch.SearchFromImage(bmp, "resources/kafra.png");
+                    await Task.Delay(500);
+                    Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
+                    kafraImg = ImageSearch.SearchFromImage(bmp2, "resources/kafra2.png");
                     if (kafraImg.X != -1 && kafraImg.Y != -1) continue;
                     if (i == 10) ai.LogError("Couldnt find Kafra image");
                 }
@@ -632,12 +635,49 @@ namespace ROMAssistant
             await Task.Delay(2000);
             //1057, 542
             ai.Click(new Point(1057, 542)); //goblin forest
+            await CloseTeleportWindowIfOpen(4000);
+        }
+
+        public async Task teleportToDesert()
+        {
+            await ai.Action.GoToKafraAgent();
+            ai.Click(new Point(530, 400)); //morroc 530 400
+            await Task.Delay(300);
+            ai.Click(new Point(1056, 570)); //desert 1056 570
+            await CloseTeleportWindowIfOpen(4000);
+        }
+
+        public async Task teleportToUnderWaterCave()
+        {
+            await ai.Action.GoToKafraAgent();
+
+            for (int i = 0; i < 5; i++)
+            {
+                //send u
+                Win32.SendU(this.ai.hWnd);
+                await Task.Delay(2000);
+            }
+            
+            //1057, 542
+            ai.Click(new Point(1060, 488)); //underwater cave
+            await CloseTeleportWindowIfOpen(4000);
+        }
+
+        public async Task CloseTeleportWindowIfOpen(int milliseconds)
+        {
+            await Task.Delay(milliseconds);
+            Bitmap bmp2 = ImageSearch.PrintWindow((IntPtr)ai.screenHandle);
+            var midgard = ImageSearch.SearchFromImage(bmp2, "resources/Midgaurd-logo.png");
+            if (midgard.X != -1 && midgard.Y != -1)
+            {
+                ai.Click(new Point(50, 50)); //back
+            }
         }
 
         public async Task ClickScript()
         {
             Win32.SendY(this.ai.hWnd);
-            await Task.Delay(350);
+            await Task.Delay(800);
         }
 
         public async Task ScrollDown()
@@ -682,11 +722,23 @@ namespace ROMAssistant
                 {
                     break;
                 }
+                if (monsterType == MonsterType.VocalL && currentLocation == "Labyrinth Forest")
+                {
+                    break;
+                }
                 if (monsterType == MonsterType.Mastering && currentLocation == "Labyrinth Forest")
                 {
                     break;
                 }
                 if (monsterType == MonsterType.VocalWG && currentLocation == "Prontera West Gate")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.VagabondWolf && currentLocation == "Sograt Desert")
+                {
+                    break;
+                }
+                if (monsterType == MonsterType.Toad && currentLocation == "Underwater Cave")
                 {
                     break;
                 }

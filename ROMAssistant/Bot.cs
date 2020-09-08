@@ -19,6 +19,9 @@ namespace ROMAssistant
             EclipseLabyrinth eclipseL = new EclipseLabyrinth(ai);
             Mastering mastering = new Mastering(ai);
             VocalWestGate vocalWG = new VocalWestGate(ai);
+            VagabondWolf vagabondWolf = new VagabondWolf(ai);
+            Toad toad = new Toad(ai);
+            VocalLabyrinth VocalL = new VocalLabyrinth(ai);
             //toad
             //vagabond-wolf
             //dragon-fly
@@ -34,7 +37,10 @@ namespace ROMAssistant
                 eclipseSG,
                 eclipseL,
                 mastering,
-                vocalWG
+                vocalWG,
+                //vagabondWolf,
+                toad,
+                VocalL
             };
             
             ScanMini scanMini = new ScanMini(ai, new OCR(), ai.Log);
