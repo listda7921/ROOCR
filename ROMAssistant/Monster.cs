@@ -14,7 +14,7 @@ namespace ROMAssistant
         public int MonsterImagePositionOffsetY { get; set; } = 0;
 
         public abstract Task<int> GetSecondsToSpawn();
-        public abstract Task GoToLocation();
+        public abstract Task<bool> GoToLocation();
 
         public abstract Task Hunt();
 
@@ -41,6 +41,8 @@ namespace ROMAssistant
         VocalWG,
         VocalL,
         VagabondWolf,
-        Toad
+        Toad,
+        DragonFly,
+        WoodGoblin
     }
 }

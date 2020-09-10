@@ -22,6 +22,8 @@ namespace ROMAssistant
             VagabondWolf vagabondWolf = new VagabondWolf(ai);
             Toad toad = new Toad(ai);
             VocalLabyrinth VocalL = new VocalLabyrinth(ai);
+            DragonFly dragonFly = new DragonFly(ai);
+            WoodGoblin woodGoblin = new WoodGoblin(ai);
             //toad
             //vagabond-wolf
             //dragon-fly
@@ -33,14 +35,16 @@ namespace ROMAssistant
             var monsterList = new List<Monster>()
             {
                 smokie,
-                rotoZairo,
                 eclipseSG,
                 eclipseL,
+                VocalL,
                 mastering,
                 vocalWG,
-                //vagabondWolf,
+                rotoZairo,
+                vagabondWolf,
                 toad,
-                VocalL
+                woodGoblin,
+                dragonFly
             };
             
             ScanMini scanMini = new ScanMini(ai, new OCR(), ai.Log);
@@ -50,8 +54,9 @@ namespace ROMAssistant
             while (active)
             {
                 var nextMonster = await GetNextMonster(_hunt, mobs);
-                await nextMonster.GoToLocation();
-                await nextMonster.Hunt();
+                bool arrived = await nextMonster.GoToLocation();
+                if(arrived)
+                    await nextMonster.Hunt();
                //await ScheduleHunt(_hunt, mobs);
             }
         }

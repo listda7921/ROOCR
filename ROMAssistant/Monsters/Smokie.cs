@@ -46,12 +46,12 @@ namespace ROMAssistant.Monsters
             return Location;
         }
 
-        public override async Task GoToLocation()
+        public override async Task<bool> GoToLocation()
         {
             var currentLocation = await _ai.Action.GetCurrentLocation();
-            if (currentLocation == GetSpawnLocation()) return;
+            if (currentLocation == GetSpawnLocation()) return true;
             await _ai.Action.UseButterFlyWing();
-            await _ai.Action.RouteToMob(0, Type);//smokie
+            return await _ai.Action.RouteToMob(0, Type);//smokie
         }
 
         public override async Task Hunt()

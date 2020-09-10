@@ -38,12 +38,12 @@ namespace ROMAssistant.Monsters
             return Type;
         }
 
-        public override async Task GoToLocation()
+        public override async Task<bool> GoToLocation()
         {
             var currentLocation = await _ai.Action.GetCurrentLocation();
-            if (currentLocation == GetSpawnLocation()) return;
+            if (currentLocation == GetSpawnLocation()) return true;
             await _ai.Action.teleportToGoblinForest();
-            await _ai.Action.DelayOnLocation(MonsterType.RotorZario);
+            return await _ai.Action.DelayOnLocation(MonsterType.RotorZario);
         }
 
         public override async Task Hunt()

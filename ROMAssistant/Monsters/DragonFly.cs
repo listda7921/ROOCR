@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace ROMAssistant.Monsters
 {
-    public class Mastering : Monster
+    public class DragonFly: Monster
     {
-        public string ImagePath = "resources/Mastering.png";
-        public MonsterType Type = MonsterType.Mastering;
-        public string Name = "Mastering";
-        public string Location = "Labyrinth Forest";
+        public string ImagePath = "resources/dragon-fly.png";
+        public MonsterType Type = MonsterType.DragonFly;
+        public string Name = "Dragon Fly";
+        public string Location = "Mjolnir Mountains";
+        public new int FightTime = 40;
 
         public AI _ai;
-        public Mastering(AI ai)
+        public DragonFly(AI ai)
         {
             _ai = ai;
         }
@@ -52,8 +53,8 @@ namespace ROMAssistant.Monsters
         {
             var currentLocation = await _ai.Action.GetCurrentLocation();
             if (currentLocation == GetSpawnLocation()) return true;
-            await _ai.Action.UseButterFlyWing();
-            return await _ai.Action.RouteToMob(3, Type);//eclipse SG
+            await _ai.Action.teleportToMjolnirMountains();
+            return await _ai.Action.DelayOnLocation(MonsterType.DragonFly);
         }
 
         public override async Task Hunt()

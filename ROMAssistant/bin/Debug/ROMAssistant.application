@@ -7,14 +7,14 @@
     <framework targetVersion="4.6.1" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="ROMAssistant.exe.manifest" size="84348">
+    <dependentAssembly dependencyType="install" codebase="ROMAssistant.exe.manifest" size="84349">
       <assemblyIdentity name="ROMAssistant.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>SI/7seWo2RLXSetyLNjjehteRgZJcc/21qJ656fXpXg=</dsig:DigestValue>
+        <dsig:DigestValue>j5QGt65YU+kOgzf3q3dZuK5o44HI4eq8jRFDLSc0Yk4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -103,6 +103,7 @@
     </Compile>
     <Compile Include="ImageSearch.cs" />
     <Compile Include="Monster.cs" />
+    <Compile Include="Monsters\DragonFly.cs" />
     <Compile Include="Monsters\EclipseLabyrinth.cs" />
     <Compile Include="Monsters\EclipseSouthGate.cs" />
     <Compile Include="Monsters\Mastering.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Monsters\VagabondWolf.cs" />
     <Compile Include="Monsters\VocalLabyrinth.cs" />
     <Compile Include="Monsters\VocalWestGate.cs" />
+    <Compile Include="Monsters\WoodGoblin.cs" />
     <Compile Include="ScanMini.cs" />
     <Compile Include="Scheduler.cs" />
     <Compile Include="Settings.cs" />

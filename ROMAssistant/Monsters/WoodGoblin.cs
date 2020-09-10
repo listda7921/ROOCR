@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace ROMAssistant.Monsters
 {
-    public class Mastering : Monster
+    public class WoodGoblin : Monster
     {
-        public string ImagePath = "resources/Mastering.png";
-        public MonsterType Type = MonsterType.Mastering;
-        public string Name = "Mastering";
-        public string Location = "Labyrinth Forest";
-
+        public string ImagePath = "resources/wood-goblin.png";
+        public MonsterType Type = MonsterType.WoodGoblin;
+        public string Name = "Wood Goblin";
+        public string Location = "Payon South";
+        public new int FightTime = 90;
         public AI _ai;
-        public Mastering(AI ai)
+
+        public WoodGoblin(AI ai)
         {
             _ai = ai;
         }
+
         public override int GetFightTime()
         {
             return FightTime;
@@ -52,8 +54,8 @@ namespace ROMAssistant.Monsters
         {
             var currentLocation = await _ai.Action.GetCurrentLocation();
             if (currentLocation == GetSpawnLocation()) return true;
-            await _ai.Action.UseButterFlyWing();
-            return await _ai.Action.RouteToMob(3, Type);//eclipse SG
+            await _ai.Action.teleportToPayonSouth();
+            return await _ai.Action.DelayOnLocation(Type);
         }
 
         public override async Task Hunt()

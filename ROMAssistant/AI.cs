@@ -329,13 +329,21 @@ namespace ROMAssistant
             isHunting = true;
             Task huntingDelayTimer = Task.Delay(ai.Settings.huntingDelay * 1000);
 
-
+            var mapOpen = await ai.Action.IsMapOpen();
+            if (mapOpen)
+                ai.Click(new Point(1243, 134));//close map
 
             while (isHunting == true)
             {
-                var mapOpen = await ai.Action.IsMapOpen();
-                if (mapOpen)
+                var closed = false;
+
+                var mapOpen2 = await ai.Action.IsMapOpen();
+                
+                if (mapOpen && !closed)
+                {
                     ai.Click(new Point(1243, 134));//close map
+                    closed = true;
+                }
                 Log.Info("Searching for monster...");
                 if (huntingDelayTimer.IsCompleted == true)
                 {
@@ -350,7 +358,7 @@ namespace ROMAssistant
                 ai.Click(new Point(ai.Settings.flyWing[0], ai.Settings.flyWing[1]));
                 await Task.Delay(400);
                 // Open Auto
-                await this.ai.Action.ClickAuto(500);
+                await this.ai.Action.ClickAuto(300);
                 // Search for mini indicator ()
 
                 Bitmap Screen = ImageSearch.PrintWindow((IntPtr)screenHandle);
@@ -363,8 +371,9 @@ namespace ROMAssistant
                     await Task.Delay(fightTime);
                     isHunting = false;
                 }
-                await Task.Delay(500);
-                await this.ai.Action.ClickAuto(500); // Close Auto
+                closed = true;
+                await Task.Delay(300);
+                //await this.ai.Action.ClickAuto(300); // Close Auto
             }
             isHunting = false;
             Log.Info("Monster probably dead by now... Idling...");
@@ -541,18 +550,20 @@ namespace ROMAssistant
             if (val.Length < 10 && val.Contains("tera")) location = "Prontera";
             else if (val.Contains("West")) location = "Prontera West Gate";
             else if (val.Contains("Lab")) location = "Labyrinth Forest";
-            else if (val.Contains("SDuth")) location = "Prontera South Gate";
+            else if (val.Contains("SDuth") && val.Contains("Gate")) location = "Prontera South Gate";
             else if (val.Contains("GDblin FDrest")
                 || val.Contains("GDblin")
                 || val.Contains("Goblin")
                 || val.Contains("Goblin Forest")) location = "Goblin Forest";
             else if (val.Contains("Desert")) location = "Sograt Desert";
             else if (val.Contains("Cave")) location = "Underwater Cave";
+            else if (val.Contains("ntains")) location = "Mjolnir Mountains";
+            else if (val.Contains("Pay") && val.Contains("SDuth")) location = "Payon South";
             var westgate = val.Length;
 
             bmp2.Dispose();
 
-            await Task.Delay(100);
+            await Task.Delay(400);
             ai.Click(new Point(1243, 134));//close map
 
             return location;
@@ -563,10 +574,10 @@ namespace ROMAssistant
             Bitmap bmp;
             Point worldMapImage;
 
+            await Task.Delay(100);
             bmp = new Bitmap(ImageSearch.PrintWindow((IntPtr)this.ai.screenHandle));
-            //await Task.Delay(100);
+            await Task.Delay(100);
             worldMapImage = ImageSearch.SearchFromImage(bmp, "resources/world-map.png");
-           // await Task.Delay(100);
             return !(worldMapImage.X == -1 && worldMapImage.Y == -1);
         }
         public async Task OpenMap()
@@ -632,7 +643,7 @@ namespace ROMAssistant
             await Task.Delay(300);
             //send u
             Win32.SendU(this.ai.hWnd);
-            await Task.Delay(2000);
+            await Task.Delay(3000);
             //1057, 542
             ai.Click(new Point(1057, 542)); //goblin forest
             await CloseTeleportWindowIfOpen(4000);
@@ -644,6 +655,15 @@ namespace ROMAssistant
             ai.Click(new Point(530, 400)); //morroc 530 400
             await Task.Delay(300);
             ai.Click(new Point(1056, 570)); //desert 1056 570
+            await CloseTeleportWindowIfOpen(4000);
+        }
+
+        public async Task teleportToPayonSouth()
+        {
+            await ai.Action.GoToKafraAgent();
+            ai.Click(new Point(533, 474)); //payon
+            await Task.Delay(300);
+            ai.Click(new Point(1059, 348)); //payon south
             await CloseTeleportWindowIfOpen(4000);
         }
 
@@ -663,6 +683,16 @@ namespace ROMAssistant
             await CloseTeleportWindowIfOpen(4000);
         }
 
+        public async Task teleportToMjolnirMountains()
+        {
+            await ai.Action.GoToKafraAgent();
+            ai.Click(new Point(532, 331)); //geffen area
+            await Task.Delay(300);
+            //1063/339
+            ai.Click(new Point(1063, 339)); //goblin forest
+            await CloseTeleportWindowIfOpen(4000);
+        }
+
         public async Task CloseTeleportWindowIfOpen(int milliseconds)
         {
             await Task.Delay(milliseconds);
@@ -677,7 +707,7 @@ namespace ROMAssistant
         public async Task ClickScript()
         {
             Win32.SendY(this.ai.hWnd);
-            await Task.Delay(800);
+            await Task.Delay(200);
         }
 
         public async Task ScrollDown()
@@ -689,13 +719,16 @@ namespace ROMAssistant
         {
 
         }
-        public async Task DelayOnLocation(MonsterType? monsterType = null)
+        public async Task<bool> DelayOnLocation(MonsterType? monsterType = null)
         {
             var arrived = false;
             int i = 0;
             while (arrived == false)
             {
-                if (i > 60) break;
+                if (i > 40)
+                {
+                    break;
+                }
 
                 var currentLocation = await ai.Action.GetCurrentLocation();
 
@@ -703,44 +736,51 @@ namespace ROMAssistant
                 
                 if (monsterType == null && currentLocation == "Prontera")
                 {
-                    arrived = true;
-                    break;
+                     arrived = true;
                 }
                 if (monsterType == MonsterType.RotorZario && currentLocation == "Goblin Forest")
                 {
-                    break;
+                     arrived = true;
                 }
                 if (monsterType == MonsterType.Smokie && currentLocation == "Prontera South Gate")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.EclipseS && currentLocation == "Prontera South Gate")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.EclipseL && currentLocation == "Labyrinth Forest")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.VocalL && currentLocation == "Labyrinth Forest")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.Mastering && currentLocation == "Labyrinth Forest")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.VocalWG && currentLocation == "Prontera West Gate")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.VagabondWolf && currentLocation == "Sograt Desert")
                 {
-                    break;
+                    arrived = true;
                 }
                 if (monsterType == MonsterType.Toad && currentLocation == "Underwater Cave")
                 {
-                    break;
+                    arrived = true;
+                }
+                if (monsterType == MonsterType.DragonFly && currentLocation == "Mjolnir Mountains")
+                {
+                    arrived = true;
+                }
+                if (monsterType == MonsterType.WoodGoblin && currentLocation == "Payon South")
+                {
+                    arrived = true;
                 }
                 i++;
                 await Task.Delay(1000);
@@ -751,9 +791,10 @@ namespace ROMAssistant
             if (mapOpen)
                 ai.Click(new Point(1243, 134));//close map
 
+            return arrived;
         }
 
-        public async Task RouteToMob(int minimumIndex, MonsterType? type = null)
+        public async Task<bool> RouteToMob(int minimumIndex, MonsterType? type = null)
         {
             // Open MVP Interface
            // ai.Log.Info($"Hunting {ai.MobName_Mini[minimumIndex]}...");
@@ -767,7 +808,7 @@ namespace ROMAssistant
             ai.Click(ReferencePoint);
             await Task.Delay(500);
             ai.Click(new Point(950, 690)); // Click Go
-            await DelayOnLocation(type);
+            return await DelayOnLocation(type);
         }
 
         public async Task UseButterFlyWing()
