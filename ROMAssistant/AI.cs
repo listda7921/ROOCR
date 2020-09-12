@@ -712,7 +712,7 @@ namespace ROMAssistant
 
         public async Task ScrollDown()
         {
-            Win32.ScrollTo((IntPtr)this.ai.hWnd, 10);
+            Win32.ScrollTo(this.ai.hWnd, 10);
         }
 
         public async Task GetMoreMinis()

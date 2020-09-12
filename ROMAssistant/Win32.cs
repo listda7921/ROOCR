@@ -107,17 +107,19 @@ namespace ROMAssistant
         }
 
         [DllImport("user32.dll")]
-        static extern int SetScrollPos(IntPtr hWnd, int nBar,
+        static extern int SetScrollPos(int hWnd, int nBar,
                 int nPos, bool bRedraw);
 
         [DllImport("User32.Dll", EntryPoint = "PostMessageA")]
         static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
 
+        [DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public static extern int GetScrollPos(int hWnd, int nBar);
 
-
-        public static void ScrollTo(IntPtr hWnd, int Position)
+        public static void ScrollTo(int hWnd, int Position)
         {
-            SetScrollPos(hWnd, 0x1, Position, true);
+            var test = GetScrollPos(hWnd, 0x115);
+            var test2 = SetScrollPos(hWnd, 0x1, Position, true);
             PostMessage(hWnd, 0x115, 4 + 0x10000 * Position, 0);
         }
 
