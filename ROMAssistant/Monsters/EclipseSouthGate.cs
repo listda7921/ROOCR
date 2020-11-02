@@ -12,6 +12,7 @@ namespace ROMAssistant.Monsters
         public MonsterType Type = MonsterType.EclipseS;
         public string Name = "Eclipse (South Gate)";
         public string Location = "Prontera South Gate";
+        
         public AI _ai;
         public EclipseSouthGate(AI ai)
         {

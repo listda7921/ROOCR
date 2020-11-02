@@ -707,7 +707,7 @@ namespace ROMAssistant
         public async Task ClickScript()
         {
             Win32.SendY(this.ai.hWnd);
-            await Task.Delay(200);
+            await Task.Delay(400);
         }
 
         public async Task ScrollDown()
